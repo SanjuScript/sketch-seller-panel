@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "50562737824",
+    "project_id": "drawing-seller",
+    "storage_bucket": "drawing-seller.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50562737824:android:cbb0abbb0bbe5d52bbcbc5",
+        "android_client_info": {
+          "package_name": "apps.shabe.blackart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "50562737824-5krtvjsr4k0f2fbal0hig6m900od1vhv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "apps.shabe.blackart",
+            "certificate_hash": "22300923f1b1ec653347a20825c9e496ea0da2e7"
+          }
+        },
+        {
+          "client_id": "50562737824-eq0lf70rrei9m3q4ifn047knmjl2ph2t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVZUXkAGhCZuCsAxYqdw2PTLoc0huetBI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50562737824-eq0lf70rrei9m3q4ifn047knmjl2ph2t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "50562737824-gch2a8vi7lac0ctn5jc1c70vj5ujvklf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.drawingSeller"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50562737824:android:2d76ab9b0c0f5374bbcbc5",
+        "android_client_info": {
+          "package_name": "apps.shabee.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "50562737824-si9b4hkdnkr41oe617n4cpddgdiovuns.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "apps.shabee.com",
+            "certificate_hash": "22300923f1b1ec653347a20825c9e496ea0da2e7"
+          }
+        },
+        {
+          "client_id": "50562737824-eq0lf70rrei9m3q4ifn047knmjl2ph2t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVZUXkAGhCZuCsAxYqdw2PTLoc0huetBI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50562737824-eq0lf70rrei9m3q4ifn047knmjl2ph2t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "50562737824-gch2a8vi7lac0ctn5jc1c70vj5ujvklf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.drawingSeller"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
