@@ -1,0 +1,162 @@
+import 'dart:developer';
+import 'package:drawer_panel/FUNCTIONS/USER_DATA_FN/user_data_fn.dart';
+import 'package:drawer_panel/HELPERS/HANDLERS/date_format.dart';
+import 'package:drawer_panel/SCREENS/EDITING_SCREENS/profile_editing.dart';
+import 'package:drawer_panel/WIDGETS/CARDS/info_cards.dart';
+import 'package:flutter/material.dart';
+import 'package:drawer_panel/MODEL/user_model.dart';
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Profile',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
+        ),
+        backgroundColor: Colors.white,
+        leading: const Icon(Icons.person_2_rounded, color: Colors.black87),
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: StreamBuilder<UserDataModel?>(
+          stream: UserData.getUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              log('Error: ${snapshot.error}');
+              return const Center(child: Text('Error loading user data'));
+            }
+
+            final user = snapshot.data;
+
+            if (user == null) {
+              return const Center(child: Text('No user data found'));
+            }
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              child: Column(
+                children: [
+                  InkWell(
+                    overlayColor:
+                        const WidgetStatePropertyAll(Colors.transparent),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  EditProfileScreen(user: user)));
+                    },
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Hero(
+                          tag: user.profile!,
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundImage: NetworkImage(user.profile ??
+                                'https://via.placeholder.com/150'),
+                          ),
+                        ),
+                        const Positioned(
+                          bottom: 0,
+                          right: -5,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.deepPurple,
+                            child: Icon(
+                              Icons.camera_alt_outlined,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    user.fullName ?? 'John Doe',
+                    style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    user.email ??
+                        'johndoe@gmail.com', 
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InfoCard(
+                          title: 'Joined on',
+                          value: DateFormater.formatDate(user.createdAt!),
+                          icon: Icons.date_range,
+                        ),
+                        const SizedBox(height: 10),
+                        InfoCard(
+                          title: 'Orders Completed',
+                          value: (user.totalOders != null)
+                              ? user.totalOders.toString()
+                              : '0',
+                          icon: Icons.shopping_cart_outlined,
+                        ),
+                        const SizedBox(height: 10),
+                        InfoCard(
+                          title: 'Orders Pending',
+                          value: (user.pending != null)
+                              ? user.pending.toString()
+                              : '0',
+                          icon: Icons.shopping_cart_outlined,
+                        ),
+                        const SizedBox(height: 10),
+                        InfoCard(
+                          title: 'Total Earnings',
+                          value: (user.earning != null)
+                              ? user.earning.toString()
+                              : '0',
+                          icon: Icons.attach_money_outlined,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

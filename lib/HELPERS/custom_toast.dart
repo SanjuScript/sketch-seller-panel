@@ -7,6 +7,7 @@ class ShowCustomToast {
   static void showToast(
       {required BuildContext context,
       Alignment loc = Alignment.bottomCenter,
+      ToastificationStyle style = ToastificationStyle.flat,
       Widget icon = const Icon(Icons.check),
       ToastificationType type = ToastificationType.success,
       int sec = 3,
@@ -14,7 +15,7 @@ class ShowCustomToast {
     toastification.show(
       context: context,
       type:type,
-      style: ToastificationStyle.flat,
+      style: style,
       autoCloseDuration:  Duration(seconds: sec),
       description: RichText(
               text: TextSpan(

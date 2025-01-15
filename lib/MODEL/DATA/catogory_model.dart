@@ -1,28 +1,41 @@
 import 'package:drawer_panel/MODEL/DATA/art_type_model.dart';
 
-class Category {
+class CategoryModel {
   final String id;
-  final String name;
-  final String description;
-  final List<ArtType> types;
+  final String? name;
+  final List<ArtTypeModel> types;
 
-  Category({
+  CategoryModel({
     required this.id,
     required this.name,
-    required this.description,
     this.types = const [],
   });
 
-  factory Category.fromJson(String id, Map<String, dynamic> json,
-      [List<ArtType>? types]) {
-    return Category(
-      id: id,
-      name: json['name'] as String,
-      description: json['description'] as String,
-      types: types ?? [],
-    );
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    var typesJson = json['types'] as List<dynamic>? ?? [];
+    List<ArtTypeModel> typesList = typesJson.map((typeJson) {
+      return ArtTypeModel.fromJson(typeJson as Map<String, dynamic>);
+    }).toList();
+     String categoryName = json['name'] != null ? json['name'] as String : '';
+    return CategoryModel(
+        id: json['id'] ?? '',
+        name: categoryName,
+        types: typesList);
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'types': types.map((type) => type.toMap()).toList(),
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Category(id: $id, name: $name, types: $types)';
   }
 }
+
 // Future<List<Category>> fetchCategories() async {
 //   final categoriesSnapshot = await FirebaseFirestore.instance.collection('categories').get();
 //   return Future.wait(categoriesSnapshot.docs.map((doc) async {

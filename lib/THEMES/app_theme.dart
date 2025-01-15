@@ -1,6 +1,6 @@
 import 'package:drawer_panel/ANIMATIONS/fade_transition.dart';
 import 'package:drawer_panel/EXTENSIONS/color_ext.dart';
-import 'package:drawer_panel/HELPERS/font_helper.dart';
+import 'package:drawer_panel/HELPERS/CONSTANTS/font_helper.dart';
 import 'package:flutter/material.dart';
 
 class ArtTheme {
@@ -12,7 +12,7 @@ class ArtTheme {
         elevation: 5,
         shadowColor: Colors.black12,
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.teal),
+        iconTheme: IconThemeData(color: Colors.deepPurpleAccent),
       ),
       textTheme: TextTheme(
         displayLarge:
@@ -46,26 +46,25 @@ class ArtTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.teal, // Button background color
-          foregroundColor: Colors.white, // Text color
+          backgroundColor: Colors.deepPurpleAccent,
+          foregroundColor: Colors.white,
           textStyle: PerfectTypogaphy.bold.copyWith(fontSize: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-         
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           backgroundColor: Colors.teal.shade50,
-          foregroundColor: Colors.teal, 
+          foregroundColor: Colors.teal,
           textStyle: PerfectTypogaphy.bold.copyWith(fontSize: 14),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.teal, 
+          foregroundColor: Colors.teal,
           side: const BorderSide(color: Colors.teal),
           textStyle: PerfectTypogaphy.bold.copyWith(fontSize: 16),
           shape: RoundedRectangleBorder(
@@ -75,9 +74,8 @@ class ArtTheme {
         ),
       ),
       buttonTheme: ButtonThemeData(
-        
         buttonColor: Colors.teal,
-        textTheme: ButtonTextTheme.primary, 
+        textTheme: ButtonTextTheme.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

@@ -1,48 +1,86 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drawer_panel/MODEL/DATA/drawing_type_model.dart';
+import 'package:drawer_panel/MODEL/DATA/product_size_model.dart';
+import 'package:drawer_panel/MODEL/DATA/review_model.dart';
+import 'package:drawer_panel/MODEL/json_parser_model.dart';
 
 class Product {
+  String? artist;
   String? productId;
+  String? ownerID;
+  String? description;
   String? title;
-  double? price;
-  List<String>? imageUrl; 
-  double? offerPrice; 
+  List<DrawingTypeModel>? drawingTypes;
   Timestamp? createdAt;
   bool? isAvailable;
   bool? inOffer;
+  List<ReviewModel>? reviews;
+  int? totalReviewCount;
+  List<String>? images;
 
   Product({
     this.productId,
+    this.ownerID,
     this.title,
-    this.price,
-    this.imageUrl,
-    this.offerPrice,
+    this.drawingTypes,
+    this.artist,
+    this.description,
     this.createdAt,
     this.isAvailable,
     this.inOffer,
+    this.reviews,
+    this.totalReviewCount = 0,
+    this.images,
   });
 
-  factory Product.fromDocument(DocumentSnapshot doc) {
+  static double getPrice(ProductSizeModel selectedSize) {
+    return selectedSize.offerPrice ?? selectedSize.price;
+  }
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    String ownerID = json['ownerID'] != null ? json['ownerID'] as String : '';
+    String description = json['description'] != null ? json['description'] as String : '';
     return Product(
-      productId: doc.id,
-      title: doc['title'] as String?,
-      price: (doc['price'] as num?)?.toDouble(),
-      imageUrl: (doc['imageUrl'] as List<dynamic>?)?.cast<String>(),
-      offerPrice: (doc['offerPrice'] as num?)?.toDouble(),
-      createdAt: doc['createdAt'] as Timestamp?,
-      isAvailable: doc['isAvailable'] as bool?,
-      inOffer: doc['inOffer'] as bool?,
+      productId: json['productId'] as String,
+      ownerID: ownerID,
+      description: description,
+      artist: json['artist'] as String,
+      title: json['title'] as String?,
+      drawingTypes: JsonParser.parseList(
+        json['drawingTypes'],
+        (data) => DrawingTypeModel.fromJson(data),
+      ),
+      createdAt: json['createdAt'] as Timestamp?,
+      isAvailable: json['isAvailable'] as bool?,
+      inOffer: json['inOffer'] as bool?,
+      reviews: JsonParser.parseList(
+        json['reviews'],
+        (data) => ReviewModel.fromJson(data),
+      ),
+      totalReviewCount: json['totalReviewCount'] as int? ?? 0,
+      images: (json['images'] as List<dynamic>?)?.cast<String>(),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'title': title,
-      'price': price,
-      'imageUrl': imageUrl,
-      'offerPrice': offerPrice,
+      'artist': artist,
+      'ownerID': ownerID,
+      'description': description,
+      'productId': productId,
+      'drawingTypes': drawingTypes?.map((type) => type.toJson()).toList(),
       'createdAt': createdAt,
       'isAvailable': isAvailable,
       'inOffer': inOffer,
+      'reviews': reviews?.map((review) => review.toJson()).toList(),
+      'totalReviewCount': totalReviewCount,
+      'images': images,
     };
+  }
+
+  @override
+  String toString() {
+    return 'Product(productId: $productId, title: $title, artist: $artist, drawingTypes: $drawingTypes, createdAt: $createdAt, isAvailable: $isAvailable, inOffer: $inOffer, reviews: $reviews, totalReviewCount: $totalReviewCount, images: $images description : $description ownerID : $ownerID';
   }
 }

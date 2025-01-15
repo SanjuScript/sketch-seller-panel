@@ -1,6 +1,7 @@
+import 'dart:developer';
 import 'package:drawer_panel/FUNCTIONS/AUTH_FUNCTIONS/admin_auth_functions.dart';
-import 'package:drawer_panel/HELPERS/asset_helper.dart';
-import 'package:drawer_panel/SCREENS/home_screen.dart';
+import 'package:drawer_panel/HELPERS/CONSTANTS/asset_helper.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/bottom_nav.dart';
 import 'package:drawer_panel/STORAGE/app_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -71,16 +72,13 @@ class GoogleLoginScreen extends StatelessWidget {
                 final result =
                     await AuthenticationFn.googleLogin(context: context);
 
-                // ScaffoldMessenger.of(context)
-                //     .showSnackBar(SnackBar(content: Text(result)));
-
                 if (result == "Google login successful!" ||
                     result == "Google sign-up successful!") {
                   _dismissLoadingDialog(context);
                   await PerfectStateManager.saveState('isAuthenticated', true);
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    MaterialPageRoute(builder: (context) => const BottomNav()),
                   );
                 } else {
                   _dismissLoadingDialog(context);
@@ -117,7 +115,7 @@ class GoogleLoginScreen extends StatelessWidget {
                     Text(
                       "Sign in with Google",
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: Colors.teal, // Teal text for consistency
+                            color: Colors.teal,
                             fontWeight: FontWeight.bold,
                           ),
                     ),
@@ -135,7 +133,7 @@ class GoogleLoginScreen extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    print("Terms & Conditions clicked");
+                    log("Terms & Conditions clicked");
                   },
                   child: Text(
                     "Terms & Conditions",

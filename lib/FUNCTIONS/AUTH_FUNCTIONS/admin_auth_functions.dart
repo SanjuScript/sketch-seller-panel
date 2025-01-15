@@ -21,7 +21,6 @@ class AuthenticationFn {
         return "Google Sign-In cancelled by the user.";
       }
 
-      // Obtain the Google authentication details
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
@@ -32,11 +31,17 @@ class AuthenticationFn {
 
       UserCredential userCredential =
           await _auth.signInWithCredential(credential);
-      // _auth.currentUser!.linkWithCredential(credential);
 
-      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
-        log("New Login");
+      // if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+      log("New Login");
+      var adminDoc = await _firestore
+          .collection('admins')
+          .doc(userCredential.user?.uid)
+          .get();
 
+      if (adminDoc.exists) {
+        log("User is an existing admin.");
+      } else {
         await _firestore
             .collection('admins')
             .doc(userCredential.user?.uid)
@@ -46,22 +51,18 @@ class AuthenticationFn {
           'uid': userCredential.user?.uid,
           'profile': userCredential.user?.photoURL,
           'createdAt': Timestamp.now(),
+          'total_earned': 0,
+          'total_deliveries': 0,
+          'pending': 0
         });
-        ShowCustomToast.showToast(
-          context: context,
-          msg: "Google sign-up successful!",
-          type: ToastificationType.success,
-        );
-        return "Google sign-up successful!";
-      } else {
-        log("Not new");
-        ShowCustomToast.showToast(
-          context: context,
-          msg: "Google login successful!",
-          type: ToastificationType.success,
-        );
-        return "Google login successful!";
       }
+
+      ShowCustomToast.showToast(
+        context: context,
+        msg: "Google sign-up successful!",
+        type: ToastificationType.success,
+      );
+      return "Google sign-up successful!";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         ShowCustomToast.showToast(
@@ -114,19 +115,29 @@ class AuthenticationFn {
 
       await _auth.signOut();
       await PerfectStateManager.saveState('isAuthenticated', false);
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const GoogleLoginScreen()));
-      ShowCustomToast.showToast(
-        context: context,
-        msg: "Logged out successfully!",
-        type: ToastificationType.success,
-      );
+
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const GoogleLoginScreen()),
+        );
+      }
+
+      if (context.mounted) {
+        ShowCustomToast.showToast(
+          context: context,
+          msg: "Logged out successfully!",
+          type: ToastificationType.success,
+        );
+      }
     } catch (e) {
-      ShowCustomToast.showToast(
-        context: context,
-        msg: "An error occurred during logout. Please try again.",
-        type: ToastificationType.error,
-      );
+      if (context.mounted) {
+        ShowCustomToast.showToast(
+          context: context,
+          msg: "An error occurred during logout. Please try again.",
+          type: ToastificationType.error,
+        );
+      }
     }
   }
 }

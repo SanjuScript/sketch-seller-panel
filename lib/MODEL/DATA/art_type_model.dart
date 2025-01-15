@@ -1,25 +1,33 @@
-
 import 'package:drawer_panel/MODEL/DATA/product_model.dart';
 
-class ArtType {
+class ArtTypeModel {
   final String id;
-  final String name;
-  final String description;
-  final List<Product> products;
+  final String? name;
+  final Product product;
 
-  ArtType({
+  ArtTypeModel({
     required this.id,
     required this.name,
-    required this.description,
-    this.products = const [],
+    required this.product,
   });
 
-  factory ArtType.fromJson(String id, Map<String, dynamic> json, [List<Product>? products]) {
-    return ArtType(
-      id: id,
-      name: json['name'] as String,
-      description: json['description'] as String,
-      products: products ?? [],
+  factory ArtTypeModel.fromJson(Map<String, dynamic> json) {
+    return ArtTypeModel(
+      id: json['id'],
+      name: json['name'] ?? '',
+      product: Product.fromJson(json['product'] as Map<String, dynamic>? ?? {}),
     );
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'product': product.toMap(),
+    };
+  }
+
+  @override
+  String toString() {
+    return 'ArtType(id: $id, name: $name, product: $product)';
   }
 }
