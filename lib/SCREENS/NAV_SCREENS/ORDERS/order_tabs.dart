@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/orders_screen.dart';
-import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/order_processing.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/VIEW_ONE/orders_screen.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/VIEW_TWO/order_processing.dart';
 
 class OrderTabs extends StatelessWidget {
   const OrderTabs({super.key});

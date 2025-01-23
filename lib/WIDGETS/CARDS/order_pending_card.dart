@@ -1,4 +1,4 @@
-import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/VIEW/ordered_picture.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/VIEW_ONE/ordered_picture.dart';
 import 'package:flutter/material.dart';
 
 class OrderPendingCard extends StatelessWidget {
