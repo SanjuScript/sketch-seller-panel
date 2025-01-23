@@ -43,9 +43,9 @@ class _BlueArtScreenState extends State<BlueArtScreen> {
                 future: _categoryData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
+                    return  Center(
                         child: LottieAnimationWidget(
-                            animationPath: GetAsset.loader));
+                            animationPath:GetAsset.lottie.loader));
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData) {

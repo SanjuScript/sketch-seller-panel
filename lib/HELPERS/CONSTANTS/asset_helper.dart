@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class GetAsset {
-  static const svgs = _GetSvgs();
-  static const lottie = _GetLotties(); // Static instance
+  static const _GetSvgs svgs = _GetSvgs();
+  static const _GetLotties lottie = _GetLotties();
+  static const _GetNotifImg notifImg = _GetNotifImg();
   static const google = "assets/images/google.png";
   static const wb1 = "assets/images/wb1.jpeg";
   static const wb2 = "assets/images/wb2.jpeg";
@@ -12,11 +13,6 @@ class GetAsset {
   static const dr1 = "assets/images/dr1.jpeg";
 
   static const List<String> allWbAssets = [];
-
-
-  //lottie
-  static const loader = "assets/lotties/loading.json";
-  static const uploading = "assets/lotties/uploading.json";
 }
 
 class _GetSvgs {
@@ -29,14 +25,14 @@ class _GetSvgs {
 class _GetLotties {
   const _GetLotties();
 
-  // Now `loader` is static
-  static const loader = "assets/lottie/loading.json";
+  final String loader = "assets/lotties/loading.json";
+  final String uploading = "assets/lotties/uploading.json";
 }
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
+class _GetNotifImg {
+  const _GetNotifImg();
+
+  final String uploadSuccess = "assets/images/NElements/upload_success.png";
+  final String uploadFailed = "assets/images/NElements/upload_failed.png";
 }
+

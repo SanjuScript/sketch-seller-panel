@@ -1,9 +1,11 @@
 import 'dart:developer';
 import 'package:drawer_panel/API/permission_api.dart';
+import 'package:drawer_panel/HELPERS/CONSTANTS/asset_helper.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/catagory_helper.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/haptic_handler.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/snack_bar_helper.dart';
 import 'package:drawer_panel/PROVIDER/product_uploader_provider.dart';
+import 'package:drawer_panel/SERVICES/notification_service.dart';
 import 'package:drawer_panel/WIDGETS/BUTTONS/custom_button.dart';
 import 'package:drawer_panel/WIDGETS/UPLOAD_PAGE/custom_drop_menu.dart';
 import 'package:drawer_panel/WIDGETS/UPLOAD_PAGE/text_fields.dart';
@@ -140,7 +142,7 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                               keyboardType: TextInputType.number,
                               initialValue: size.length.toString(),
                               decoration:
-                                  const InputDecoration(labelText: 'Length'),
+                                  const InputDecoration(labelText: 'Height *'),
                               onChanged: (value) {
                                 provider.updateSize(
                                   index,
@@ -155,7 +157,7 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                               initialValue: size.width.toString(),
                               keyboardType: TextInputType.number,
                               decoration:
-                                  const InputDecoration(labelText: 'Width'),
+                                  const InputDecoration(labelText: 'Width *'),
                               onChanged: (value) {
                                 provider.updateSize(
                                   index,
@@ -170,7 +172,7 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                               initialValue: size.price.toString(),
                               keyboardType: TextInputType.number,
                               decoration:
-                                  const InputDecoration(labelText: 'Price'),
+                                  const InputDecoration(labelText: 'Price *'),
                               onChanged: (value) {
                                 provider.updateSize(
                                   index,
@@ -221,19 +223,6 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                                 Colors.lightBlueAccent
                               ],
                             ),
-                            // if (provider.hasValidSizes())
-                            //   CustomButton(
-                            //     text: 'Copy recent ',
-                            //     onPressed: () {
-                            //       if (provider.drawingTypes.length > 1) {
-                            //         provider.copySizes(index );
-                            //       }
-                            //     },
-                            //     gradientColors: const [
-                            //       Colors.blue,
-                            //       Colors.lightBlueAccent
-                            //     ],
-                            //   ),
                             const SizedBox(width: 10),
                             CustomButton(
                               text: 'Remove Drawing Type',
@@ -264,7 +253,7 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
-                  children: (provider.imageFiles).map((image) {
+                  children: provider.imageFiles.map((image) {
                     return Stack(
                       children: [
                         ClipRRect(
@@ -298,8 +287,7 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                   await PermissionApi.requestStorageOrPhotosPermission(context)
                       .then((onValue) async {
                     if (onValue) {
-                      if (provider.imageFiles.length < 10 &&
-                          provider.imageFiles.isEmpty) {
+                      if (provider.imageFiles.length < 10) {
                         await provider.pickMultipleImages();
                       } else {
                         SnackbarHandler.instance.showSnackbar(
@@ -344,6 +332,19 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                           message: "Please select minimum 1 image");
                     }
                   } else {
+                    // await  NotificationService.showServiceNotification(
+                    //       title: "Upload Success",
+                    //       body: "Your file has been uploaded successfully",
+                    //       payload: "catogory_up",
+                    //       imageUrl: GetAsset.notifImg.uploadSuccess);
+                    await NotificationService.showServiceNotification(
+                      title: "Upload Failed",
+                      body: "There was an error uploading your file.",
+                      payload: "category_up",
+                      imageUrl: GetAsset.notifImg.uploadFailed,
+                    );
+                    
+
                     HapticHandler.instance.errorImpact();
                     SnackbarHandler.instance.showSnackbar(
                         context: context,

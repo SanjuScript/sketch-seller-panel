@@ -1,22 +1,33 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drawer_panel/PROVIDER/NAV/order_pending_provider.dart';
 import 'package:drawer_panel/PROVIDER/VIEW/drawing_type_selector.dart';
 import 'package:drawer_panel/PROVIDER/NAV/bottom_nav_provider.dart';
+import 'package:drawer_panel/PROVIDER/image_downloader_provider.dart';
 import 'package:drawer_panel/PROVIDER/network_provider.dart';
 import 'package:drawer_panel/PROVIDER/product_slider_provider.dart';
 import 'package:drawer_panel/PROVIDER/product_uploader_provider.dart';
 import 'package:drawer_panel/PROVIDER/profile_editing_provider.dart';
-import 'package:drawer_panel/SCREENS/AUTH_SCREEN/login_screen.dart';
-import 'package:drawer_panel/SCREENS/NAV_SCREENS/bottom_nav.dart';
+import 'package:drawer_panel/ROUTER/page_routers.dart';
+import 'package:drawer_panel/SERVICES/notification_service.dart';
 import 'package:drawer_panel/STORAGE/app_storage.dart';
 import 'package:drawer_panel/THEMES/app_theme.dart';
 import 'package:drawer_panel/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
+FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
+Future _firebaseBackgroundMessage(RemoteMessage message) async {
+  if (message.notification != null) {
+    log("Some notification Received in background...");
+  }
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +49,37 @@ Future<void> main() async {
   } else {
     await Firebase.initializeApp();
   }
+  final isAuthenticated =
+      await PerfectStateManager.readState('isAuthenticated') ?? false;
+  isAuthenticatedNotifier.value = isAuthenticated;
+
+  await NotificationService.localNotiInit();
+  FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    if (message.notification != null) {
+      log("Background Notification Tapped");
+      // handleNotificationTapped(message);
+      log(message.toMap().toString());
+      AppRouter.router.go("/");
+    }
+  });
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    String payloadData = jsonEncode(message.data);
+    log(payloadData, name: "payload data");
+    log("Got a message in foreground");
+    if (message.notification != null) {
+      if (kIsWeb) {
+        log("Web message");
+      } else {
+        NotificationService.showOrderNotification(
+            title: message.notification!.title!,
+            body: message.notification!.body!,
+            payload: payloadData);
+      }
+    }
+  });
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
@@ -64,6 +106,9 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: (_) => PendingCountProvider(),
       ),
+      ChangeNotifierProvider(
+        create: (_) => DownloadProvider(),
+      ),
     ],
     child: const MyApp(),
   ));
@@ -79,26 +124,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final networkProvider =
+          Provider.of<NetworkProvider>(context, listen: false);
+      networkProvider.executeOnConnected(() {
+        NotificationService.getDeviceToken();
+      });
+    });
+    return MaterialApp.router(
+      routerDelegate: AppRouter.router.routerDelegate,
+      routeInformationParser: AppRouter.router.routeInformationParser,
+      routeInformationProvider: AppRouter.router.routeInformationProvider,
       theme: ArtTheme.lightTheme,
-      home: FutureBuilder<bool>(
-        future: PerfectStateManager.checkAuthState(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: CircularProgressIndicator(),
-            );
-          }
-
-          final bool isAuthenticated = snapshot.data ?? false;
-          log(isAuthenticated.toString());
-          if (isAuthenticated) {
-            return const BottomNav();
-          } else {
-            return const GoogleLoginScreen();
-          }
-        },
-      ),
     );
   }
 }

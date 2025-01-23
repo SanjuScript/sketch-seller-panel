@@ -1,9 +1,12 @@
 import 'dart:developer';
 import 'package:drawer_panel/FUNCTIONS/AUTH_FUNCTIONS/admin_auth_functions.dart';
 import 'package:drawer_panel/HELPERS/CONSTANTS/asset_helper.dart';
-import 'package:drawer_panel/SCREENS/NAV_SCREENS/bottom_nav.dart';
+import 'package:drawer_panel/ROUTER/page_routers.dart';
 import 'package:drawer_panel/STORAGE/app_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class GoogleLoginScreen extends StatelessWidget {
   const GoogleLoginScreen({super.key});
@@ -76,10 +79,7 @@ class GoogleLoginScreen extends StatelessWidget {
                     result == "Google sign-up successful!") {
                   _dismissLoadingDialog(context);
                   await PerfectStateManager.saveState('isAuthenticated', true);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const BottomNav()),
-                  );
+                  isAuthenticatedNotifier.value = true;
                 } else {
                   _dismissLoadingDialog(context);
                 }

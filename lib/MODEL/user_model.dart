@@ -9,6 +9,7 @@ class UserDataModel {
   final int? totalOders;
   final int? earning;
   final int? pending;
+  final String? nfToken;
 
   UserDataModel({
     this.fullName,
@@ -17,6 +18,7 @@ class UserDataModel {
     this.pending,
     this.profile,
     this.totalOders,
+    this.nfToken,
     this.uid,
     this.createdAt,
   });
@@ -25,6 +27,7 @@ class UserDataModel {
     return UserDataModel(
       fullName: map['fullName'],
       email: map['email'],
+      nfToken: map['nfToken'],
       profile: map['profile'],
       pending: map['pending'],
       earning: map['total_earned'],
@@ -40,6 +43,7 @@ class UserDataModel {
       'pending':pending,
       'total_earned': earning,
       'email': email,
+      'nfToken':nfToken,
       'uid': uid,
       'total_deliveries':totalOders,
       'profile': profile,

@@ -5,22 +5,18 @@ class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
 
   @override
-  Widget build(BuildContext context){
-
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pending Orders'),
-        leading: const Icon(
-          Icons.pending_actions_rounded,
-          color: Colors.black87,
-        ),
-      ),
       body: ListView.builder(
         itemCount: 5,
         shrinkWrap: true,
         itemBuilder: (context, index) {
-       
-          return OrderPendingCard();
+          return const OrderPendingCard(
+            title: "Wood Burning",
+            date: "22-34-3434",
+            purchaserName: "Mammmoty",
+            
+          );
         },
       ),
     );

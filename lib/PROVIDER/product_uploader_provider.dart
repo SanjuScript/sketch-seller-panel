@@ -47,16 +47,13 @@ class ProductUploaderProvider with ChangeNotifier {
 
       if (result != null && result.files.isNotEmpty) {
         final newFiles = result.files.map((file) => File(file.path!)).toList();
-        final totalFiles = imageFiles.length + newFiles.length;
-
-        if (totalFiles > 10) {
-          final allowedFilesCount = 10 - imageFiles.length;
-          if (allowedFilesCount > 0) {
-            imageFiles.addAll(newFiles.take(allowedFilesCount));
-          }
+        final availableSpace = 10 - imageFiles.length;
+        if (newFiles.length > availableSpace) {
+          imageFiles.addAll(newFiles.take(availableSpace));
         } else {
           imageFiles.addAll(newFiles);
         }
+        notifyListeners();
 
         notifyListeners();
       }
@@ -64,7 +61,9 @@ class ProductUploaderProvider with ChangeNotifier {
       log("Error picking images: $e");
     }
   }
-
+  bool isImageLimitReached() {
+    return imageFiles.length >= 10;
+  }
   void copySizes(int toIndex) {
     if (drawingTypes.isNotEmpty && drawingTypes[0].sizes != null) {
       drawingTypes[toIndex].sizes = List.from(drawingTypes[0].sizes!);
@@ -136,7 +135,7 @@ class ProductUploaderProvider with ChangeNotifier {
         Navigator.pop(context);
         clearAllFields();
       });
-       SnackbarHandler.instance.showSnackbar(
+      SnackbarHandler.instance.showSnackbar(
         context: context,
         message: "Product upload successful!",
       );

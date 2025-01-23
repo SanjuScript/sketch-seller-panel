@@ -18,7 +18,7 @@ class ProfileScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
         ),
         backgroundColor: Colors.white,
-        leading: const Icon(Icons.person_2_rounded, color: Colors.black87),
+        leading: const Icon(Icons.person_2_rounded),
         elevation: 0,
       ),
       body: SafeArea(
@@ -30,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
             }
 
             if (snapshot.hasError) {
-              log('Error: ${snapshot.error}');
+              log('Error: ${snapshot.error}', name: "snapshot error");
               return const Center(child: Text('Error loading user data'));
             }
 
@@ -72,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
                             radius: 20,
                             backgroundColor: Colors.deepPurple,
                             child: Icon(
-                              Icons.camera_alt_outlined,
+                              Icons.edit,
                               color: Colors.white,
                               size: 18,
                             ),
@@ -92,19 +92,21 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    user.email ??
-                        'johndoe@gmail.com', 
+                    user.email ?? 'johndoe@gmail.com',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black54,
                     ),
                   ),
                   const SizedBox(height: 20),
-
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF4A00E0), Color(0xFF8E2DE2)],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: const [
                         BoxShadow(
@@ -149,7 +151,6 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 30),
                 ],
               ),

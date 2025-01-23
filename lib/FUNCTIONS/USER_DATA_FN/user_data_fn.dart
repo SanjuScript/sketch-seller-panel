@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drawer_panel/API/auth_api.dart';
 import 'package:drawer_panel/MODEL/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class UserData {
+  static final uid = AuthApi.auth.currentUser!.uid;
   static Stream<UserDataModel?> getUserData() {
-    final uid = AuthApi.auth.currentUser!.uid;
     try {
       return FirebaseFirestore.instance
           .collection('admins')
@@ -32,7 +33,7 @@ class UserData {
 
     if (newName.isEmpty) {
       log("New name cannot be empty.");
-      return ;
+      return;
     }
 
     try {
@@ -41,10 +42,25 @@ class UserData {
       });
 
       log("Name updated successfully.");
-     
     } catch (e) {
       log("Error updating name: $e");
+    }
+  }
 
+  static Future<void> storeNotificationToken(String token) async {
+    try {
+      User? currentUser = AuthApi.auth.currentUser;
+      if (currentUser != null) {
+        String userId = currentUser.uid;
+        DocumentReference userDocRef =
+            FirebaseFirestore.instance.collection('admins').doc(userId);
+
+        await userDocRef.set({'nfToken': token}, SetOptions(merge: true));
+      } else {
+        log("User is not authenticated.");
+      }
+    } catch (e) {
+      log('Error storing notification token: $e');
     }
   }
 

@@ -1,4 +1,3 @@
-
 import 'package:drawer_panel/SERVICES/network_service.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +17,16 @@ class NetworkProvider with ChangeNotifier {
 
   Future<void> retry() async {
     await _networkService.retryConnection();
+  }
+
+  Future<void> executeOnConnected(Function() action) async {
+    if (_isConnected) {
+      action();
+    } else {
+      _networkService.networkStream.firstWhere((status) => status).then((_) {
+        action();
+      });
+    }
   }
 
   @override

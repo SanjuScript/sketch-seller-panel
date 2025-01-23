@@ -1,10 +1,12 @@
 import 'dart:developer';
 import 'package:drawer_panel/HELPERS/custom_toast.dart';
-import 'package:drawer_panel/SCREENS/AUTH_SCREEN/login_screen.dart';
+import 'package:drawer_panel/ROUTER/page_routers.dart';
+import 'package:drawer_panel/SERVICES/notification_service.dart';
 import 'package:drawer_panel/STORAGE/app_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:toastification/toastification.dart';
 
@@ -115,13 +117,14 @@ class AuthenticationFn {
 
       await _auth.signOut();
       await PerfectStateManager.saveState('isAuthenticated', false);
+      await PerfectStateManager.remove('isAuthenticated');
+      isAuthenticatedNotifier.value = false;
 
-      if (context.mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const GoogleLoginScreen()),
-        );
-      }
+      await NotificationService.showLogoutNotification(
+        title: "Logged Out",
+        body: "You have been logged out of your account.",
+        payload: "logout_event",
+      );
 
       if (context.mounted) {
         ShowCustomToast.showToast(

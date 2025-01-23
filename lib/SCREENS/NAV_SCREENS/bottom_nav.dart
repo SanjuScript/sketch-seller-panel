@@ -1,23 +1,27 @@
 import 'package:drawer_panel/PROVIDER/NAV/bottom_nav_provider.dart';
 import 'package:drawer_panel/PROVIDER/NAV/order_pending_provider.dart';
+import 'package:drawer_panel/ROUTER/page_routers.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/order_tabs.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/transaction_screen.dart';
+import 'package:drawer_panel/SERVICES/notification_service.dart';
 import 'package:drawer_panel/WIDGETS/bottom_nav_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:drawer_panel/SCREENS/NAV_SCREENS/home_screen.dart';
-import 'package:drawer_panel/SCREENS/NAV_SCREENS/orders_screen.dart';
 import 'package:drawer_panel/SCREENS/NAV_SCREENS/profile_screen.dart';
-import 'package:drawer_panel/SCREENS/NAV_SCREENS/transaction_screen.dart';
 
 class BottomNav extends StatelessWidget {
   const BottomNav({super.key});
 
   @override
   Widget build(BuildContext context) {
+    checkNotificationPermission(context);
+    NotificationService.init();
     final navProvider = Provider.of<BottomNavProvider>(context);
     final screens = [
       HomeScreen(),
       const TransactionScreen(),
-      const OrdersScreen(),
+      const OrderTabs(),
       const ProfileScreen()
     ];
 
