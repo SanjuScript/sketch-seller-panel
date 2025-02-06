@@ -7,8 +7,8 @@ import 'package:drawer_panel/MODEL/DATA/catogory_model.dart';
 
 class GetCatogoriesFN {
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  static final String name = AuthApi.auth.currentUser!.displayName ?? '';
-  static final String userID = AuthApi.auth.currentUser!.uid;
+    static final String name = AuthApi.auth.currentUser!.displayName ?? '';
+    static final String userID = AuthApi.auth.currentUser!.uid;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   static Future<CategoryModel?> getCategoryByName(String categoryName) async {

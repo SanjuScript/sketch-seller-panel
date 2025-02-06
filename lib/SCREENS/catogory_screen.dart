@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:drawer_panel/API/permission_api.dart';
+import 'package:drawer_panel/FUNCTIONS/NOTIFICATIONS/notifications_sender.dart';
 import 'package:drawer_panel/HELPERS/CONSTANTS/asset_helper.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/catagory_helper.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/haptic_handler.dart';
@@ -318,7 +319,13 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
 
                     if (provider.imageFiles.isNotEmpty) {
                       if (provider.drawingTypes.isNotEmpty) {
-                        provider.writeData(context);
+                        if (!provider.isUploading) {
+                          provider.writeData(context);
+                        } else {
+                          SnackbarHandler.instance.showSnackbar(
+                              context: context,
+                              message: "File is uploading...");
+                        }
                       } else {
                         HapticHandler.instance.errorImpact();
                         SnackbarHandler.instance.showSnackbar(
@@ -332,18 +339,18 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                           message: "Please select minimum 1 image");
                     }
                   } else {
-                    // await  NotificationService.showServiceNotification(
-                    //       title: "Upload Success",
-                    //       body: "Your file has been uploaded successfully",
-                    //       payload: "catogory_up",
-                    //       imageUrl: GetAsset.notifImg.uploadSuccess);
+                  
                     await NotificationService.showServiceNotification(
                       title: "Upload Failed",
                       body: "There was an error uploading your file.",
                       payload: "category_up",
                       imageUrl: GetAsset.notifImg.uploadFailed,
                     );
-                    
+                    // SendNotification.toOne(
+                    //   "eGhKMqQ1ThGmm9B69Jjhw9:APA91bHFzF9cpXLR99fzIioqVmR1axy-WTt6UuEvkdXiiTqjEO-L3Ilm_ZljT8sB6gtAH32M9fQVsP65uZymOsaC9Wh-4RQmDh-Eu72G5XvuXPowHBB1YhM",
+                    //   "haloo",
+                    //   "Entella"
+                    // );
 
                     HapticHandler.instance.errorImpact();
                     SnackbarHandler.instance.showSnackbar(

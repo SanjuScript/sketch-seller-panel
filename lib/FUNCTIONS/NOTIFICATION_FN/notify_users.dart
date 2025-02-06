@@ -3,8 +3,12 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 class SendNotification {
-  static Future<void> toSpecificOne(
-      String token, String title, String body) async {
+  static Future<void> toSpecificUser(
+    String token,
+    String title,
+    String body, {
+    Map<String, dynamic>? extras,
+  }) async {
     try {
       final response = await http.post(
         Uri.parse(
@@ -15,9 +19,7 @@ class SendNotification {
           'token': token,
           'title': title,
           'body': body,
-          'extraData': {
-            'orderId': '12345',
-          },
+          'extraData': extras
         }),
       );
 

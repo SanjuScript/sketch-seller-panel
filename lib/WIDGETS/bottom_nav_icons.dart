@@ -7,14 +7,14 @@ class IconBottomBar extends StatelessWidget {
     required this.icon,
     required this.selected,
     required this.onPressed,
-    this.showDot = false, // Added a flag for showing the dot
+    this.showDot = false, 
   });
 
   final String text;
   final IconData icon;
   final bool selected;
   final VoidCallback onPressed;
-  final bool showDot; // Flag to indicate whether to show the dot
+  final bool showDot;
 
   final primaryColor = const Color(0xff4338CA);
 

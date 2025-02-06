@@ -51,6 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       surfaceTintColor: Colors.transparent,
                       color: Colors.transparent,
                       child: ProfilePic(
+                        isShowPhotoUpload: profileProvider.isUploading,
                         image: widget.user.profile!,
                         imageUploadBtnPress: () {},
                         img: profileProvider.croppedFile,

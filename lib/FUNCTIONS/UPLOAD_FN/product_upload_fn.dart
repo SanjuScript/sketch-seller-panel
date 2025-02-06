@@ -41,8 +41,13 @@ class ProductUploader {
     return imageUrls;
   }
 
-  Product createProduct(ProductUploaderProvider provider,
-      List<DrawingTypeModel> drawingTypes, List<String> imageUrls) {
+  Product createProduct(
+    ProductUploaderProvider provider,
+    List<DrawingTypeModel> drawingTypes,
+    List<String> imageUrls,
+    String categoryId,
+    String artTypeId,
+  ) {
     String productId = GetUniqueID.getCustomUniqueId();
     final currentTimestamp = Timestamp.now();
 
@@ -58,7 +63,10 @@ class ProductUploader {
       reviews: [],
       ownerID: userID,
       totalReviewCount: 0,
+      avgRating: 0.0,
       images: imageUrls,
+      categoryId: categoryId,
+      artTypeId: artTypeId,
     );
   }
 
@@ -87,6 +95,7 @@ class ProductUploader {
         existingTypes.add({
           'id': artType.id,
           'name': artType.name,
+          "catName": selectedCategory,
           'product': artType.product.toMap(),
         });
 
@@ -99,6 +108,7 @@ class ProductUploader {
             {
               'id': artType.id,
               'name': artType.name,
+              "catName": selectedCategory,
               'product': artType.product.toMap(),
             }
           ],
@@ -123,7 +133,8 @@ class ProductUploader {
       String categoryId = GetUniqueID.getCustomUniqueId();
       String artTypeId = GetUniqueID.getCustomUniqueId();
       List<String> imageUrls = await uploadImages(imageFiles, selectedCategory);
-      Product product = createProduct(provider, drawingTypes, imageUrls);
+      Product product = createProduct(provider, drawingTypes, imageUrls,
+          "category$categoryId", "arttype$artTypeId");
       ArtTypeModel artType = createArtType(artTypeId, selectedType, product);
       await handleCategoryData(categoryId, selectedCategory, artType);
       log("Product upload successful!");
@@ -132,4 +143,3 @@ class ProductUploader {
     }
   }
 }
-

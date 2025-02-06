@@ -21,7 +21,7 @@ class AppRouter {
     initialLocation: '/',
     routes: [
       GoRoute(
-        path: '/',
+        path: '/',  
         builder: (context, state) {
           return const SplashScreen();
         },

@@ -7,7 +7,7 @@ class PendingCountProvider extends ChangeNotifier {
   int get pendingCount => _pendingCount;
 
   PendingCountProvider() {
-    GetOrderPendingCount.getPendingCount().listen((count) {
+    GetOrderDetails.getPendingCount().listen((count) {
       _pendingCount = count;
       notifyListeners();
     });

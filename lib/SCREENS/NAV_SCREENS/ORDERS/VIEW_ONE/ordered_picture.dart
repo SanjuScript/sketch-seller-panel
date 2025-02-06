@@ -1,14 +1,20 @@
-import 'package:drawer_panel/HELPERS/CONSTANTS/asset_helper.dart';
+import 'dart:developer';
+
+import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/update_order_fn.dart';
+import 'package:drawer_panel/HELPERS/date_formater.dart';
+import 'package:drawer_panel/MODEL/ORDER/address_model.dart';
+import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
 import 'package:drawer_panel/PROVIDER/image_downloader_provider.dart';
 import 'package:drawer_panel/WIDGETS/BUTTONS/custom_button.dart';
-import 'package:drawer_panel/WIDGETS/BUTTONS/download_button.dart';
 import 'package:drawer_panel/WIDGETS/DIALOGS/mark_as_started_dialogue.dart';
 import 'package:drawer_panel/WIDGETS/ORDER_ELEMENTS/order_details_displayer.dart';
+import 'package:drawer_panel/WIDGETS/custom_cached_image_displayer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class OrderedPictureScreen extends StatelessWidget {
-  const OrderedPictureScreen({super.key});
+  final OrderDetailModel orderDetailModel;
+  const OrderedPictureScreen({super.key, required this.orderDetailModel});
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +45,14 @@ class OrderedPictureScreen extends StatelessWidget {
                     offset: const Offset(2, 2),
                   ),
                 ],
-                image: const DecorationImage(
-                  image: AssetImage(GetAsset.gl1),
-                  fit: BoxFit.cover,
-                ),
               ),
               alignment: Alignment.bottomCenter,
+              child: CustomCachedImageDisplayer(
+                width: size.width * 0.9,
+                height: size.height * 0.4,
+                imageUrl: orderDetailModel.selectedImage,
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             const SizedBox(height: 10),
             Consumer<DownloadProvider>(builder: (context, provider, child) {
@@ -54,8 +62,9 @@ class OrderedPictureScreen extends StatelessWidget {
                     : "Download Image",
                 onPressed: () {
                   provider.downloadImage(
-                      "https://images.pexels.com/photos/11958343/pexels-photo-11958343.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                      "sanju.jpg",context);
+                      orderDetailModel.selectedImage,
+                      "image_${DateTime.now().microsecondsSinceEpoch}.jpg",
+                      context);
                 },
                 gradientColors: [Colors.deepPurple[100]!, Colors.deepPurple],
                 icon: Icons.download,
@@ -81,28 +90,50 @@ class OrderedPictureScreen extends StatelessWidget {
               child: Row(
                 children: [
                   SizedBox(
-                    // color: Colors.red,
                     height: size.height,
                     width: size.width * .18,
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      child: Image.asset(
-                        fit: BoxFit.cover,
-                        GetAsset.dr1,
-                        height: size.height,
-                        width: size.width * .18,
-                      ),
-                    ),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        child: CustomCachedImageDisplayer(
+                          imageUrl:
+                              orderDetailModel.productDetails!.productImage,
+                          height: size.height,
+                          width: size.width * .18,
+                          borderRadius: BorderRadius.circular(10),
+                        )),
                   ),
                   const SizedBox(width: 20),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Wood burning"),
-                      Text("Resin Art"),
-                      Text("Wood burning"),
-                    ],
-                  )
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          orderDetailModel.productDetails?.catName ??
+                              "Unknown Product",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black.withOpacity(0.85),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          orderDetailModel.productDetails!.drawingType ??
+                              "No Type",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -120,119 +151,94 @@ class OrderedPictureScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Order Information",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: size.width * .06,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
-                  SizedBox(height: 12),
-                  OrderDetailsDisplayer(label: "User Name:", value: "John Doe"),
+                  const SizedBox(height: 12),
                   OrderDetailsDisplayer(
-                      label: "Drawing Name:", value: "Sunset Portrait"),
-                  OrderDetailsDisplayer(label: "Size:", value: "20x30 inches"),
+                      label: "Buyer Name:",
+                      value: orderDetailModel.userDetails!.fullName!),
                   OrderDetailsDisplayer(
-                      label: "Drawing Type:", value: "Watercolor"),
+                      label: "Drawing Name:",
+                      value: orderDetailModel.productDetails!.catName),
                   OrderDetailsDisplayer(
-                      label: "Order Date:", value: "2025-01-22"),
+                      label: "Size:",
+                      value:
+                          "${orderDetailModel.productDetails!.size!.height}x${orderDetailModel.productDetails!.size!.width} inches"),
                   OrderDetailsDisplayer(
-                      label: "Order Time:", value: "15:45 PM"),
-                  SizedBox(height: 10),
+                      label: "Drawing Type:",
+                      value: orderDetailModel.productDetails!.drawingType),
+                  OrderDetailsDisplayer(
+                      label: "Paid Amount",
+                      value:
+                          "INR ${orderDetailModel.productDetails!.paidAmount.toString()}"),
+                  OrderDetailsDisplayer(
+                      label: "Order Date:",
+                      value: DateFormatHelper.formatDate(
+                          orderDetailModel.orderTime!)),
+                  OrderDetailsDisplayer(
+                      label: "Order Time:",
+                      value: DateFormatHelper.formatTime(
+                          orderDetailModel.orderTime!)),
+                  const SizedBox(height: 10),
                   Text(
                     "Additional Details",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: size.width * .06,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   OrderDetailsDisplayer(
-                      label: "Order ID:", value: "ORD12345678"),
+                      label: "Order ID:", value: orderDetailModel.orderId),
                   OrderDetailsDisplayer(
-                      label: "Purchase ID:", value: "TRX987654321"),
+                      label: "Payment ID:",
+                      value: orderDetailModel.paymentModel!.paymentID!),
                   OrderDetailsDisplayer(
-                      label: "Product ID:", value: "PROD20230101"),
+                      label: "Payment Method:",
+                      value: orderDetailModel.transactionModel!.method),
                   OrderDetailsDisplayer(
-                      label: "Payment Method:", value: "Credit Card"),
+                      label: "Order Status:", value: orderDetailModel.status),
                   OrderDetailsDisplayer(
-                      label: "Order Status:", value: "Pending"),
-                  OrderDetailsDisplayer(
-                      label: "Contact Email:", value: "johndoe@example.com"),
-                  SizedBox(height: 10),
+                      label: "Contact Email:",
+                      value: orderDetailModel.userDetails!.email!),
+                  const SizedBox(height: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         "Shipping Address Details",
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: size.width * .06,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
-                      SizedBox(height: 12),
-
-                      // User and Contact Details
-                      OrderDetailsDisplayer(
-                          label: "Name:", value: "Sanjay bro"),
-                      OrderDetailsDisplayer(
-                          label: "Phone:", value: "+9146466476"),
-                      OrderDetailsDisplayer(
-                          label: "Alternate Phone:", value: "+91"),
-                      OrderDetailsDisplayer(
-                          label: "Address Type:", value: "Home"),
-                      SizedBox(height: 10), // Add spacing between sections
-
-                      // Address Details
+                      const SizedBox(height: 12),
+                      ..._buildAddressDetails(orderDetailModel.address),
+                      const SizedBox(height: 10),
                       Text(
                         "Address",
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: size.width * .06,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      OrderDetailsDisplayer(
-                          label: "House No:", value: "sbshjsjs"),
-                      OrderDetailsDisplayer(label: "Road:", value: "sbssbs"),
-                      OrderDetailsDisplayer(
-                          label: "Landmark:", value: "hzbhzh"),
-                      OrderDetailsDisplayer(label: "City:", value: "Bengaluru"),
-                      OrderDetailsDisplayer(
-                          label: "State:", value: "Karnataka"),
-                      OrderDetailsDisplayer(label: "PIN:", value: "560087"),
-                      SizedBox(height: 10),
-
-                      // Order Metadata
-                      Text(
-                        "Order Metadata",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      OrderDetailsDisplayer(
-                          label: "Created At:",
-                          value: "January 1, 2025 at 5:31:37 PM"),
-                      OrderDetailsDisplayer(
-                          label: "Last Edited On:",
-                          value: "January 1, 2025 at 5:31:37 PM"),
-                      OrderDetailsDisplayer(
-                          label: "Document ID:", value: "5s3jHK7G9ldzzGKyJBvx"),
-
-                      SizedBox(height: 20),
+                      const SizedBox(height: 8),
+                      ..._buildFullAddress(orderDetailModel.address),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -240,7 +246,16 @@ class OrderedPictureScreen extends StatelessWidget {
             CustomButton(
               text: "Mark As Started",
               onPressed: () {
-                showMarkAsStartedDialogue(context: context, onConfirm: () {});
+                showMarkAsStartedDialogue(
+                  context: context,
+                  onConfirm: () {
+                    log(orderDetailModel.userDetails!.uid.toString());
+                    UpdateOrderDetails.updateTrackingStage(
+                        orderDetailModel.userDetails!,
+                        orderDetailModel.orderId,
+                        "Drawing Started");
+                  },
+                );
               },
               gradientColors: [
                 Colors.deepOrangeAccent[100]!,
@@ -253,5 +268,35 @@ class OrderedPictureScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildAddressDetails(AddressModel? address) {
+    Map<String, String?> details = {
+      "Name:": address?.name,
+      "Phone:": address?.phone,
+      "Alternate Phone:": address?.alternatePhone ?? "Not Provided",
+      "Address Type:": address?.addressType,
+    };
+
+    return details.entries.map((entry) {
+      return OrderDetailsDisplayer(
+          lines: 2, label: entry.key, value: entry.value ?? "N/A");
+    }).toList();
+  }
+
+  List<Widget> _buildFullAddress(AddressModel? address) {
+    Map<String, String?> details = {
+      "House No:": address?.house,
+      "Road:": address?.road,
+      "Landmark:": address?.landmark,
+      "City:": address?.city,
+      "State:": address?.state,
+      "PIN:": address?.pin,
+    };
+
+    return details.entries.map((entry) {
+      return OrderDetailsDisplayer(
+          lines: 2, label: entry.key, value: entry.value ?? "N/A");
+    }).toList();
   }
 }

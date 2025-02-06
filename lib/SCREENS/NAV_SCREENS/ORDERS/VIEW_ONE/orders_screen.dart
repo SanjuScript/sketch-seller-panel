@@ -1,23 +1,58 @@
+import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/get_order_pending_stream.dart';
+import 'package:drawer_panel/HELPERS/date_formater.dart';
+import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
 import 'package:drawer_panel/WIDGETS/CARDS/order_pending_card.dart';
+import 'package:drawer_panel/WIDGETS/keep_alive_me.dart';
 import 'package:flutter/material.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
 
   @override
+  _OrdersScreenState createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  late Future<List<OrderDetailModel>> _ordersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _ordersFuture = GetOrderDetails.getOrdersConfirmed();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView.builder(
-        itemCount: 5,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return const OrderPendingCard(
-            title: "Wood Burning",
-            date: "22-34-3434",
-            purchaserName: "Mammmoty",
-            
-          );
-        },
+    return CustomKeepAliveMe(
+      keepAlive: true,
+      child: Scaffold(
+        body: FutureBuilder<List<OrderDetailModel>>(
+          future: _ordersFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                  child: CircularProgressIndicator()); // Loading state
+            } else if (snapshot.hasError) {
+              return const Center(child: Text("Error loading orders"));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text("No orders found"));
+            }
+
+            List<OrderDetailModel> orders = snapshot.data!;
+
+            return ListView.builder(
+              itemCount: orders.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                var order = orders[index];
+
+                return OrderPendingCard(
+                  orderDetailModel: order,
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

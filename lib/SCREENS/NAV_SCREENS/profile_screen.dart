@@ -2,7 +2,9 @@ import 'dart:developer';
 import 'package:drawer_panel/FUNCTIONS/USER_DATA_FN/user_data_fn.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/date_format.dart';
 import 'package:drawer_panel/SCREENS/EDITING_SCREENS/profile_editing.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/delivered_orders.dart';
 import 'package:drawer_panel/WIDGETS/CARDS/info_cards.dart';
+import 'package:drawer_panel/WIDGETS/custom_cached_image_displayer.dart';
 import 'package:flutter/material.dart';
 import 'package:drawer_panel/MODEL/user_model.dart';
 
@@ -11,6 +13,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -60,9 +63,14 @@ class ProfileScreen extends StatelessWidget {
                         Hero(
                           tag: user.profile!,
                           child: CircleAvatar(
-                            radius: 70,
-                            backgroundImage: NetworkImage(user.profile ??
-                                'https://via.placeholder.com/150'),
+                            radius: 60,
+                            child: CustomCachedImageDisplayer(
+                              borderRadius: BorderRadius.circular(100),
+                              // height: size.height * .12,
+                              // width: size.width * .35,
+                              imageUrl: user.profile ??
+                                  'https://via.placeholder.com/150',
+                            ),
                           ),
                         ),
                         const Positioned(
@@ -147,6 +155,20 @@ class ProfileScreen extends StatelessWidget {
                               ? user.earning.toString()
                               : '0',
                           icon: Icons.attach_money_outlined,
+                        ),
+                        const SizedBox(height: 10),
+                        InfoCard(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DeliveredOrders()));
+                          },
+                          title: 'Delivered Orders',
+                          value: (user.earning != null)
+                              ? user.earning.toString()
+                              : '0',
+                          icon: Icons.delivery_dining_rounded,
                         ),
                       ],
                     ),

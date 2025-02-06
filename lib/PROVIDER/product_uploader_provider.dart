@@ -1,9 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:drawer_panel/FUNCTIONS/UPLOAD_FN/product_upload_fn.dart';
+import 'package:drawer_panel/HELPERS/CONSTANTS/asset_helper.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/snack_bar_helper.dart';
 import 'package:drawer_panel/MODEL/DATA/drawing_type_model.dart';
 import 'package:drawer_panel/MODEL/DATA/product_size_model.dart';
+import 'package:drawer_panel/SERVICES/notification_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -61,9 +63,11 @@ class ProductUploaderProvider with ChangeNotifier {
       log("Error picking images: $e");
     }
   }
+
   bool isImageLimitReached() {
     return imageFiles.length >= 10;
   }
+
   void copySizes(int toIndex) {
     if (drawingTypes.isNotEmpty && drawingTypes[0].sizes != null) {
       drawingTypes[toIndex].sizes = List.from(drawingTypes[0].sizes!);
@@ -115,6 +119,9 @@ class ProductUploaderProvider with ChangeNotifier {
   }
 
   Future<void> writeData(BuildContext context) async {
+    if (isUploading) {
+      return;
+    }
     try {
       isUploading = true;
       notifyListeners();
@@ -131,7 +138,7 @@ class ProductUploaderProvider with ChangeNotifier {
 
       isUploading = false;
       notifyListeners();
-      Future.delayed(Durations.extralong1, () {
+      Future.delayed(Durations.long3, () {
         Navigator.pop(context);
         clearAllFields();
       });
@@ -139,6 +146,11 @@ class ProductUploaderProvider with ChangeNotifier {
         context: context,
         message: "Product upload successful!",
       );
+      await NotificationService.showServiceNotification(
+          title: "Upload Success",
+          body: "Your file has been uploaded successfully",
+          payload: "catogory_up",
+          imageUrl: GetAsset.notifImg.uploadSuccess);
     } catch (e) {
       isUploading = false;
       notifyListeners();

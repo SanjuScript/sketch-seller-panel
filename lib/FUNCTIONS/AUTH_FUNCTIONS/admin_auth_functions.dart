@@ -1,14 +1,12 @@
 import 'dart:developer';
-import 'package:drawer_panel/HELPERS/custom_toast.dart';
+import 'package:drawer_panel/HELPERS/CONSTANTS/show_toast.dart';
 import 'package:drawer_panel/ROUTER/page_routers.dart';
 import 'package:drawer_panel/SERVICES/notification_service.dart';
 import 'package:drawer_panel/STORAGE/app_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:toastification/toastification.dart';
 
 class AuthenticationFn {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -58,47 +56,25 @@ class AuthenticationFn {
           'pending': 0
         });
       }
+      showToast("Google sign-up successful!");
 
-      ShowCustomToast.showToast(
-        context: context,
-        msg: "Google sign-up successful!",
-        type: ToastificationType.success,
-      );
       return "Google sign-up successful!";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
-        ShowCustomToast.showToast(
-            context: context,
-            msg: "Account exists with a different credential.",
-            type: ToastificationType.error,
-            icon: Icon(
-              Icons.error,
-              color: Colors.red[300],
-            ));
+        showToast("Account exists with a different credential.");
+
         return "Account exists with a different credential.";
       } else if (e.code == 'invalid-credential') {
-        ShowCustomToast.showToast(
-            context: context,
-            msg: "Invalid credential.",
-            type: ToastificationType.error,
-            icon: Icon(
-              Icons.error,
-              color: Colors.red[300],
-            ));
+        showToast("Invalid credential.");
+
         return "Invalid credential.";
       } else {
         return e.message ?? "An error occurred during Google login.";
       }
     } catch (e) {
       log(e.toString());
-      ShowCustomToast.showToast(
-          context: context,
-          msg: "An unknown error occurred. Please try again.",
-          type: ToastificationType.error,
-          icon: Icon(
-            Icons.error,
-            color: Colors.red[300],
-          ));
+      showToast("An unknown error occurred. Please try again.");
+
       return "An unknown error occurred. Please try again.";
     }
   }
@@ -127,19 +103,11 @@ class AuthenticationFn {
       );
 
       if (context.mounted) {
-        ShowCustomToast.showToast(
-          context: context,
-          msg: "Logged out successfully!",
-          type: ToastificationType.success,
-        );
+        showToast("Logged out successfully!");
       }
     } catch (e) {
       if (context.mounted) {
-        ShowCustomToast.showToast(
-          context: context,
-          msg: "An error occurred during logout. Please try again.",
-          type: ToastificationType.error,
-        );
+        showToast("An unknown error occurred. Please try again.");
       }
     }
   }

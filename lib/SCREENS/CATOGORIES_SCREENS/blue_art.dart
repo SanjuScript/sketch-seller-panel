@@ -43,9 +43,9 @@ class _BlueArtScreenState extends State<BlueArtScreen> {
                 future: _categoryData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return  Center(
+                    return Center(
                         child: LottieAnimationWidget(
-                            animationPath:GetAsset.lottie.loader));
+                            animationPath: GetAsset.lottie.loader));
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData) {
@@ -66,7 +66,7 @@ class _BlueArtScreenState extends State<BlueArtScreen> {
                       }
                     }
                   }
-sortOptions = sortOptions.toSet().toList();
+                  sortOptions = sortOptions.toSet().toList();
                   return ArtStyleScreen(
                     sortOptions: sortOptions,
                     artTypes: artStyles,

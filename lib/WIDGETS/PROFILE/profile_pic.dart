@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:drawer_panel/WIDGETS/custom_cached_image_displayer.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 
@@ -38,10 +39,20 @@ class ProfilePic extends StatelessWidget {
         alignment: Alignment.bottomRight,
         children: [
           CircleAvatar(
-            radius: 50,
-            backgroundImage: img != null && img!.path.isNotEmpty
-                ? FileImage(File(img!.path))
-                : NetworkImage(image),
+            radius: 60,
+            child: isShowPhotoUpload
+                ? const CircularProgressIndicator()
+                : img != null && img!.path.isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Image.file(
+                          File(img!.path),
+                          fit: BoxFit.cover,
+                        ))
+                    : CustomCachedImageDisplayer(
+                        borderRadius: BorderRadius.circular(100),
+                        imageUrl: image,
+                      ),
           ),
           InkWell(
             onTap: imageUploadBtnPress,

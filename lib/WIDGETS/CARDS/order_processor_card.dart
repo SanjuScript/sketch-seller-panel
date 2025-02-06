@@ -1,17 +1,25 @@
+import 'package:drawer_panel/HELPERS/date_formater.dart';
+import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
 import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/VIEW_TWO/order_updating_screen.dart';
 import 'package:drawer_panel/WIDGETS/custom_cached_image_displayer.dart';
 import 'package:flutter/material.dart';
 
 class OrderProcessorCard extends StatelessWidget {
-  const OrderProcessorCard({super.key});
+  final OrderDetailModel orderDetailModel;
+  final bool forDelivery;
+  const OrderProcessorCard(
+      {super.key, required this.orderDetailModel, this.forDelivery = false});
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => OrderUpdatingScreen()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    OrderUpdatingScreen(orderDetailModel: orderDetailModel)));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -32,61 +40,78 @@ class OrderProcessorCard extends StatelessWidget {
         child: Row(
           children: [
             CustomCachedImageDisplayer(
-              imageUrl:
-                  "https://images.pexels.com/photos/30349920/pexels-photo-30349920/free-photo-of-woman-with-straw-hat-entering-white-archway.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+              imageUrl: orderDetailModel.selectedImage,
               height: size.height * .09,
               width: size.width * .20,
               borderRadius: BorderRadius.circular(10),
             ),
-
             const SizedBox(width: 15),
-
-            const Expanded(
+            Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'To: John Doe',
-                    style: TextStyle(
+                    'To: ${orderDetailModel.userDetails!.fullName}',
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                   Row(
                     children: [
-                      Icon(
-                        Icons.shopping_bag_rounded,
+                      const Icon(
+                        Icons.brush_outlined,
                         color: Colors.blueAccent,
                         size: 20,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(
-                        'Product Name',
-                        style: TextStyle(fontSize: 14),
+                        "${orderDetailModel.productDetails!.catName}\n${orderDetailModel.productDetails!.drawingType} ",
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.timelapse,
-                        color: Colors.orangeAccent,
-                        size: 20,
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        'Status: In Progress',
-                        style: TextStyle(
-                          fontSize: 14,
+                  if (forDelivery) ...[
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.done,
                           color: Colors.green,
                         ),
-                      ),
-                    ],
-                  ),
+                        Text(
+                          "Delivered",
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayLarge
+                              ?.copyWith(fontSize: 16),
+                        ),
+                      ],
+                    )
+                  ] else ...[
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.timelapse,
+                          color: Colors.orangeAccent,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          'Status: ${orderDetailModel.tracking!.stage}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   Text(
-                    'Last Updated: 2023-01-20 10:00',
-                    style: TextStyle(
+                    forDelivery
+                        ? "Delivered on ${DateFormatHelper.formatDateTime(orderDetailModel.tracking!.updatedAt!)}"
+                        : 'Last Updated: ${DateFormatHelper.formatDateTime(orderDetailModel.tracking!.updatedAt!)}',
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
                     ),
@@ -94,20 +119,20 @@ class OrderProcessorCard extends StatelessWidget {
                 ],
               ),
             ),
-            // Action Button
-            Container(
-              height: size.height * 0.05,
-              width: size.height * 0.05,
-              decoration: BoxDecoration(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(10),
+            if (!forDelivery)
+              Container(
+                height: size.height * 0.05,
+                width: size.height * 0.05,
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
-              child: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Colors.white,
-                size: 16,
-              ),
-            ),
           ],
         ),
       ),

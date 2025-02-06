@@ -10,6 +10,7 @@ import 'package:drawer_panel/WIDGETS/helper_text.dart';
 import 'package:drawer_panel/WIDGETS/lottie_animater.dart';
 import 'package:drawer_panel/WIDGETS/no_internet_widget.dart';
 import 'package:provider/provider.dart';
+
 class GlassArtScreen extends StatefulWidget {
   const GlassArtScreen({super.key});
 
@@ -42,9 +43,9 @@ class _GlassArtScreenState extends State<GlassArtScreen> {
                 future: _categoryData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return  Center(
+                    return Center(
                         child: LottieAnimationWidget(
-                            animationPath:GetAsset.lottie.loader));
+                            animationPath: GetAsset.lottie.loader));
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData) {
@@ -65,7 +66,7 @@ class _GlassArtScreenState extends State<GlassArtScreen> {
                       }
                     }
                   }
-sortOptions = sortOptions.toSet().toList();
+                  sortOptions = sortOptions.toSet().toList();
                   return ArtStyleScreen(
                     sortOptions: sortOptions,
                     artTypes: artStyles,

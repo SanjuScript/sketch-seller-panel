@@ -32,9 +32,9 @@ class DownloadProvider with ChangeNotifier {
           picturesDirectory.createSync(recursive: true);
         }
 
-        String customFilename = _generateFilename(fileName, downloadUrl);
-        File file = File(path.join(picturesDirectory.path, customFilename));
-        log(customFilename);
+        // String customFilename = _generateFilename(fileName, downloadUrl);
+        File file = File(path.join(picturesDirectory.path, fileName));
+        log(fileName);
 
         if (!file.parent.existsSync()) {
           file.parent.createSync(recursive: true);

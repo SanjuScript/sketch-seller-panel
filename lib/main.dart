@@ -82,33 +82,15 @@ Future<void> main() async {
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(
-        create: (_) => ProductUploaderProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => NetworkProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => ProductUploaderProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => ProductSliderProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => DrawingTypeProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => BottomNavProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => ProfileProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => PendingCountProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => DownloadProvider(),
-      ),
+      ChangeNotifierProvider(create: (_) => ProductUploaderProvider()),
+      ChangeNotifierProvider(create: (_) => NetworkProvider()),
+      ChangeNotifierProvider(create: (_) => ProductUploaderProvider()),
+      ChangeNotifierProvider(create: (_) => ProductSliderProvider()),
+      ChangeNotifierProvider(create: (_) => DrawingTypeProvider()),
+      ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+      ChangeNotifierProvider(create: (_) => ProfileProvider()),
+      ChangeNotifierProvider(create: (_) => PendingCountProvider()),
+      ChangeNotifierProvider(create: (_) => DownloadProvider()),
     ],
     child: const MyApp(),
   ));

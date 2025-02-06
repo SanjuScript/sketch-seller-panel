@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -10,10 +11,12 @@ class ProfileProvider extends ChangeNotifier {
   File? _selectedImage;
   String? _newName;
   CroppedFile? _croppedFile;
+  bool _isUploading = false;
 
   String? get newName => _newName;
   File? get selectedImage => _selectedImage;
   CroppedFile? get croppedFile => _croppedFile;
+  bool get isUploading => _isUploading;
 
   void setName(String? name) {
     _newName = name;
@@ -55,14 +58,29 @@ class ProfileProvider extends ChangeNotifier {
   }
 
   Future<void> saveProfile(BuildContext context) async {
-    if (_newName!.isNotEmpty) {
-      await UserData.updateUserName(_newName!);
+    if (_isUploading) {
+      return;
     }
-    if (_croppedFile != null && _croppedFile!.path.isNotEmpty) {
-      await UserData.updateProfilePicture(_croppedFile!.path);
+    _isUploading = true;
+    notifyListeners();
+    try {
+      if (_newName!.isNotEmpty) {
+        await UserData.updateUserName(_newName!);
+      }
+      if (_croppedFile != null && _croppedFile!.path.isNotEmpty) {
+        await UserData.updateProfilePicture(_croppedFile!.path);
+      }
+      Navigator.pop(context);
+      SnackbarHandler.instance.showSnackbar(
+          context: context, message: "Profile updated successfully!");
+    } catch (e) {
+      SnackbarHandler.instance.showSnackbar(
+          context: context,
+          message: "Failed to update profile. Please try again.");
+      log("Error updating profile: $e");
+    } finally {
+      _isUploading = false;
+      notifyListeners();
     }
-    Navigator.pop(context);
-    SnackbarHandler.instance.showSnackbar(
-        context: context, message: "Profile updated successfully!");
   }
 }

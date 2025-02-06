@@ -15,8 +15,8 @@ class BottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    checkNotificationPermission(context);
-    NotificationService.init();
+      checkNotificationPermission(context);
+      NotificationService.init();
     final navProvider = Provider.of<BottomNavProvider>(context);
     final screens = [
       HomeScreen(),

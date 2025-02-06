@@ -17,11 +17,17 @@ class Product {
   List<ReviewModel>? reviews;
   int? totalReviewCount;
   List<String>? images;
+  String? categoryId;
+  String? artTypeId;
+  double? avgRating;
 
   Product({
     this.productId,
     this.ownerID,
     this.title,
+    this.avgRating,
+    this.artTypeId,
+    this.categoryId,
     this.drawingTypes,
     this.artist,
     this.description,
@@ -39,13 +45,17 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     String ownerID = json['ownerID'] != null ? json['ownerID'] as String : '';
-    String description = json['description'] != null ? json['description'] as String : '';
+    String description =
+        json['description'] != null ? json['description'] as String : '';
     return Product(
       productId: json['productId'] as String,
+      avgRating: json['avgRating'] as double? ?? 0.0,
       ownerID: ownerID,
       description: description,
       artist: json['artist'] as String,
       title: json['title'] as String?,
+      artTypeId: json['artTypeId'] as String?,
+      categoryId: json['categoryId'] as String?,
       drawingTypes: JsonParser.parseList(
         json['drawingTypes'],
         (data) => DrawingTypeModel.fromJson(data),
@@ -66,8 +76,11 @@ class Product {
     return {
       'title': title,
       'artist': artist,
+      'avgRating': avgRating,
       'ownerID': ownerID,
       'description': description,
+      'categoryId': categoryId,
+      'artTypeId': artTypeId,
       'productId': productId,
       'drawingTypes': drawingTypes?.map((type) => type.toJson()).toList(),
       'createdAt': createdAt,
