@@ -1,7 +1,9 @@
 import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/get_order_pending_stream.dart';
 import 'package:drawer_panel/HELPERS/date_formater.dart';
 import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/VIEW_TWO/order_processing.dart';
 import 'package:drawer_panel/WIDGETS/CARDS/order_pending_card.dart';
+import 'package:drawer_panel/WIDGETS/ORDER_ELEMENTS/no_order_widget.dart';
 import 'package:drawer_panel/WIDGETS/keep_alive_me.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +20,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
+    setFuture();
+  }
+
+  Future<void> setFuture() async {
     _ordersFuture = GetOrderDetails.getOrdersConfirmed();
   }
 
@@ -35,7 +41,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
             } else if (snapshot.hasError) {
               return const Center(child: Text("Error loading orders"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("No orders found"));
+              return NoOrdersFound(
+                onRefresh: setFuture,
+              );
             }
 
             List<OrderDetailModel> orders = snapshot.data!;

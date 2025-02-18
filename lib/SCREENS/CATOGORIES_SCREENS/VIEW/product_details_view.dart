@@ -18,9 +18,6 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
-  int totalOrders = 50;
-  int deliveredOrders = 45;
-  double totalRevenue = 15000;
   late PageController pageController;
 
   void onPageChange(int index) {
@@ -33,7 +30,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     super.initState();
     final provider = context.read<ProductSliderProvider>();
     pageController = provider.createPageController();
-   
   }
 
   @override
@@ -58,10 +54,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          
             SizedBox(
-              height: size.height * 0.30,
-              width: size.width * 0.98,
+              width: size.width,
+              height: size.height * 0.4,
               child: ProductImagesDisplayer(
                 count: product.images!.length,
                 imgs: product.images!,
@@ -88,7 +83,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: product.inOffer! ? Colors.red : Colors.teal,
+                        color:
+                            product.inOffer! ? Colors.red : Colors.deepPurple,
                       ),
                     ),
                     if (product.inOffer!)
@@ -109,7 +105,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
-                color: Colors.teal.withOpacity(0.1),
+                color: Colors.deepPurple.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
               padding: const EdgeInsets.all(16),
@@ -130,9 +126,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       children: [
                         AnalyticsCards(
                             title: "Total Orders",
-                            value: totalOrders.toString()),
+                            value: (product.totalOrders ?? '0').toString()),
                         AnalyticsCards(
-                            title: "Revenue", value: "₹$totalRevenue"),
+                            title: "Revenue",
+                            value: "₹${(product.revenue ?? '0')}"),
                       ],
                     ),
                   ),
@@ -147,7 +144,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     icon: const Icon(Icons.next_plan),
                     label: const Text("See full overview"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
+                      backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -166,7 +163,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             ),
             const SizedBox(height: 8),
             Text(
-              product.description ?? "No description available",
+              product.description ?? "No description availa ble",
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 16),

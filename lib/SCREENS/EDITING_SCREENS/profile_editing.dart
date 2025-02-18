@@ -70,7 +70,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor:
-                                const Color(0xFF00BF6D).withOpacity(0.05),
+                                const Color.fromARGB(255, 162, 0, 191).withOpacity(0.05),
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16.0 * 1.5, vertical: 16.0),
                             border: const OutlineInputBorder(
@@ -88,10 +88,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 16.0),
                 SizedBox(
-                  width: 160,
+                  width: MediaQuery.sizeOf(context).width * .90,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00BF6D),
+                      backgroundColor: const Color.fromARGB(255, 127, 0, 191),
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 48),
                       shape: const StadiumBorder(),

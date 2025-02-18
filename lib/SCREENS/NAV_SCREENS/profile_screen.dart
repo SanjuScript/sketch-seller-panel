@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/get_order_pending_stream.dart';
 import 'package:drawer_panel/FUNCTIONS/USER_DATA_FN/user_data_fn.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/date_format.dart';
 import 'package:drawer_panel/SCREENS/EDITING_SCREENS/profile_editing.dart';
@@ -66,8 +67,6 @@ class ProfileScreen extends StatelessWidget {
                             radius: 60,
                             child: CustomCachedImageDisplayer(
                               borderRadius: BorderRadius.circular(100),
-                              // height: size.height * .12,
-                              // width: size.width * .35,
                               imageUrl: user.profile ??
                                   'https://via.placeholder.com/150',
                             ),
@@ -133,43 +132,42 @@ class ProfileScreen extends StatelessWidget {
                           icon: Icons.date_range,
                         ),
                         const SizedBox(height: 10),
-                        InfoCard(
-                          title: 'Orders Completed',
-                          value: (user.totalOders != null)
-                              ? user.totalOders.toString()
-                              : '0',
-                          icon: Icons.shopping_cart_outlined,
-                        ),
+                        StreamBuilder<Object>(
+                            stream: GetOrderDetails.getPendingCount(),
+                            builder: (context, snapshot) {
+                              return InfoCard(
+                                title: 'Orders Pending',
+                                value: (snapshot.data ?? 0).toString(),
+                                icon: Icons.shopping_cart_outlined,
+                              );
+                            }),
                         const SizedBox(height: 10),
-                        InfoCard(
-                          title: 'Orders Pending',
-                          value: (user.pending != null)
-                              ? user.pending.toString()
-                              : '0',
-                          icon: Icons.shopping_cart_outlined,
-                        ),
+                        StreamBuilder<Object>(
+                            stream: GetOrderDetails.getTotalEarnings(),
+                            builder: (context, snapshot) {
+                              return InfoCard(
+                                title: 'Total Earnings',
+                                value: "${(snapshot.data ?? 0)} Rs".toString(),
+                                icon: Icons.attach_money_outlined,
+                              );
+                            }),
                         const SizedBox(height: 10),
-                        InfoCard(
-                          title: 'Total Earnings',
-                          value: (user.earning != null)
-                              ? user.earning.toString()
-                              : '0',
-                          icon: Icons.attach_money_outlined,
-                        ),
-                        const SizedBox(height: 10),
-                        InfoCard(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DeliveredOrders()));
-                          },
-                          title: 'Delivered Orders',
-                          value: (user.earning != null)
-                              ? user.earning.toString()
-                              : '0',
-                          icon: Icons.delivery_dining_rounded,
-                        ),
+                        StreamBuilder<Object>(
+                            stream: GetOrderDetails.getDeliveredCount(),
+                            builder: (context, snapshot) {
+                              return InfoCard(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              DeliveredOrders()));
+                                },
+                                title: 'Delivered Orders',
+                                value: (snapshot.data ?? 0).toString(),
+                                icon: Icons.delivery_dining_rounded,
+                              );
+                            }),
                       ],
                     ),
                   ),

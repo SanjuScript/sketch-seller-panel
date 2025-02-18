@@ -30,6 +30,9 @@ class _OrderUpdatingScreenState extends State<OrderUpdatingScreen> {
   }
 
   String? _selectedStatus;
+  Future<void> refreshData() async {
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -62,154 +65,160 @@ class _OrderUpdatingScreenState extends State<OrderUpdatingScreen> {
         backgroundColor: Colors.blueAccent,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
-              ),
-              child: const Text(
-                'Manage and update your order statuses with ease.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-            const SizedBox(height: 5),
-            StepperWidget(
-                orderDetailModel: widget.orderDetailModel,
-                statuses: statuses,
-                currentStep: _currentStep),
-            OrderTrackingDetailDispalyer(
-              orderId: widget.orderDetailModel.orderId,
-              userId: widget.orderDetailModel.userDetails!.uid!,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.12),
-                      spreadRadius: 2,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: DropdownButton<String>(
-                  dropdownColor: Colors.white,
-                  value: _selectedStatus,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedStatus = newValue;
-                    });
-                  },
-                  isExpanded: true,
-                  hint: const Text(
-                    'Select Status',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black54,
-                    ),
+      body: RefreshIndicator.adaptive(
+        onRefresh: refreshData,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
                   ),
-                  icon: const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.blueAccent,
-                  ),
-                  iconSize: 28,
-                  elevation: 8,
-                  style: const TextStyle(
+                ),
+                child: const Text(
+                  'Manage and update your order statuses with ease.',
+                  style: TextStyle(
+                    color: Colors.white,
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    fontWeight: FontWeight.w400,
                   ),
-                  underline: Container(),
-                  items: dropStatuses
-                      .map<DropdownMenuItem<String>>((StatusModel status) {
-                    return DropdownMenuItem<String>(
-                      value: status.title,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              status.icon,
-                              color: status.color,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 16),
-                            Text(
-                              status.title,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
-                        ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              StepperWidget(
+                  orderDetailModel: widget.orderDetailModel,
+                  statuses: statuses,
+                  currentStep: _currentStep),
+              OrderTrackingDetailDispalyer(
+                orderId: widget.orderDetailModel.orderId,
+                userId: widget.orderDetailModel.userDetails!.uid!,
+              ),
+              SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.12),
+                        spreadRadius: 2,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_selectedStatus != null) {
-                    if (widget.orderDetailModel.tracking!.stage !=
-                        _selectedStatus) {
-                      UpdateOrderDetails.updateTrackingStage(
-                          widget.orderDetailModel.userDetails!,
-                          widget.orderDetailModel.orderId,
-                          _selectedStatus!);
-                      log("Selected status: $_selectedStatus");
-                      setState(() {});
-                    } else {
-                      showToast(
-                          "Current stage and selected stage cannot be same");
-                    }
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    ],
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  elevation: 5,
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.update, color: Colors.white),
-                    SizedBox(width: 10),
-                    Text(
-                      'Update Status',
-                      style: TextStyle(fontSize: 16),
+                  child: DropdownButton<String>(
+                    dropdownColor: Colors.white,
+                    value: _selectedStatus,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedStatus = newValue;
+                      });
+                    },
+                    isExpanded: true,
+                    hint: const Text(
+                      'Select Status',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black54,
+                      ),
                     ),
-                  ],
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.blueAccent,
+                    ),
+                    iconSize: 28,
+                    elevation: 8,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                    underline: Container(),
+                    items: dropStatuses
+                        .map<DropdownMenuItem<String>>((StatusModel status) {
+                      return DropdownMenuItem<String>(
+                        value: status.title,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                status.icon,
+                                color: status.color,
+                                size: 24,
+                              ),
+                              const SizedBox(width: 16),
+                              Text(
+                                status.title,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-          ],
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_selectedStatus != null) {
+                      if (widget.orderDetailModel.tracking!.stage !=
+                          _selectedStatus) {
+                        UpdateOrderDetails.updateTrackingStage(
+                            widget.orderDetailModel.userDetails!,
+                            widget.orderDetailModel.orderId,
+                            _selectedStatus!);
+                        log("Selected status: $_selectedStatus");
+                        Future.delayed(Durations.medium3, () {
+                          refreshData();
+                        });
+                      } else {
+                        showToast(
+                            "Current stage and selected stage cannot be same");
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    elevation: 5,
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.update, color: Colors.white),
+                      SizedBox(width: 10),
+                      Text(
+                        'Update Status',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

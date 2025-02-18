@@ -14,6 +14,7 @@ class OrderTrackingDetailDispalyer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.sizeOf(context);
     return FutureBuilder<TrackingModel?>(
       future: GetOrderDetails.getTrackingModelByOrderId(orderId),
       builder: (context, snapshot) {
@@ -23,11 +24,13 @@ class OrderTrackingDetailDispalyer extends StatelessWidget {
 
         if (snapshot.hasError) {
           return Center(
-            child: Text('Error: ${snapshot.error}',
-                style: const TextStyle(color: Colors.red)),
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: const TextStyle(
+                  color: Colors.red, fontWeight: FontWeight.bold),
+            ),
           );
         }
-
         if (snapshot.hasData) {
           final trackingModel = snapshot.data!;
 
@@ -55,25 +58,54 @@ class OrderTrackingDetailDispalyer extends StatelessWidget {
                         itemCount: sortedUpdatedStages.length,
                         itemBuilder: (context, index) {
                           String stage = sortedUpdatedStages[index].key;
-                          return ListTile(
-                            title: Text(stage),
-                            subtitle: Text(
-                                "Timestamp: ${DateFormatHelper.formatDateTime(sortedUpdatedStages[index].value) ?? "N/A"}"),
-                            trailing: IconButton(
-                              onPressed: () {
-                                showConfirmationDialog(
-                                  context: context,
-                                  title: "Delete Stage",
-                                  message:
-                                      "Are you sure you want to delete this stage? This action cannot be undone.",
-                                  confirmText: "Delete",
-                                  onConfirm: () {
-                                    UpdateOrderDetails.deleteUpdatedStage(
-                                        userId, orderId, stage);
-                                  },
-                                );
-                              },
-                              icon: const Icon(Icons.delete),
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.shade400
+                                      .withOpacity(0.3),
+                                  blurRadius: 15,
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                stage,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayMedium
+                                    ?.copyWith(fontSize: size.width * .045),
+                              ),
+                              subtitle: Text(
+                                DateFormatHelper.formatDateTime(
+                                    sortedUpdatedStages[index].value),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(fontSize: size.width * .036,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  showConfirmationDialog(
+                                    context: context,
+                                    title: "Delete Stage",
+                                    message:
+                                        "Are you sure you want to delete this stage? This action cannot be undone.",
+                                    confirmText: "Delete",
+                                    onConfirm: () {
+                                      UpdateOrderDetails.deleteUpdatedStage(
+                                          userId, orderId, stage);
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.delete),
+                              ),
                             ),
                           );
                         },

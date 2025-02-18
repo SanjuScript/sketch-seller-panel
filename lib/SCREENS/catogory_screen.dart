@@ -339,18 +339,12 @@ class _CatogoryUploaderState extends State<CatogoryUploader> {
                           message: "Please select minimum 1 image");
                     }
                   } else {
-                  
                     await NotificationService.showServiceNotification(
                       title: "Upload Failed",
                       body: "There was an error uploading your file.",
                       payload: "category_up",
                       imageUrl: GetAsset.notifImg.uploadFailed,
                     );
-                    // SendNotification.toOne(
-                    //   "eGhKMqQ1ThGmm9B69Jjhw9:APA91bHFzF9cpXLR99fzIioqVmR1axy-WTt6UuEvkdXiiTqjEO-L3Ilm_ZljT8sB6gtAH32M9fQVsP65uZymOsaC9Wh-4RQmDh-Eu72G5XvuXPowHBB1YhM",
-                    //   "haloo",
-                    //   "Entella"
-                    // );
 
                     HapticHandler.instance.errorImpact();
                     SnackbarHandler.instance.showSnackbar(

@@ -45,8 +45,8 @@ class DrawingTypeSelector extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
                         color: provider.selectedDrawingTypeIndex == index
-                            ? Colors.teal
-                            : Colors.teal.shade50,
+                            ? Colors.deepPurple
+                            : Colors.deepPurple.shade50,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(

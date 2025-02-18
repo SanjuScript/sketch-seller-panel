@@ -1,26 +1,37 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drawer_panel/API/auth_api.dart';
-import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/update_user_section.dart';
 import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
 import 'package:drawer_panel/MODEL/ORDER/tracking_details.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class GetOrderDetails {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final String userID = AuthApi.auth.currentUser!.uid;
 
   static Stream<int> getPendingCount() {
-    return _firestore
-        .collection('admins')
-        .doc(userID)
+    return AuthApi.orders
+        .where("ownerID", isEqualTo: AuthApi.currentAdmin!.uid)
+        .where("status", isEqualTo: "Pending")
         .snapshots()
-        .map((documentSnapshot) {
-      if (documentSnapshot.exists) {
-        return documentSnapshot.data()?['pending'] ?? 0;
+        .map((snapshot) => snapshot.size);
+  }
+
+  static Stream<int> getDeliveredCount() {
+    return AuthApi.orders
+        .where("ownerID", isEqualTo: AuthApi.currentAdmin!.uid)
+        .where("status", isEqualTo: "Delivered")
+        .snapshots()
+        .map((snapshot) => snapshot.size);
+  }
+
+  static Stream<num> getTotalEarnings() {
+    return AuthApi.currentAdminDoc.snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        return (data['total_earned'] ?? 0.0);
+      } else {
+        return 0.0;
       }
-      return 0;
     });
   }
 
@@ -28,20 +39,15 @@ class GetOrderDetails {
     try {
       CollectionReference ordersRef = AuthApi.orders;
 
-      QuerySnapshot snapshot = await ordersRef.get();
+      QuerySnapshot snapshot = await ordersRef
+          .where("ownerID", isEqualTo: AuthApi.currentAdmin!.uid)
+          .where("tracking.stage", isEqualTo: "Order Confirmed")
+          .orderBy("orderTime", descending: true)
+          .get();
 
       List<OrderDetailModel> orders = snapshot.docs
-          .map((doc) {
-            OrderDetailModel order =
-                OrderDetailModel.fromJson(doc.data() as Map<String, dynamic>);
-            if (order.tracking != null &&
-                order.tracking!.stage == "Order Confirmed") {
-              return order;
-            } else {
-              return null;
-            }
-          })
-          .whereType<OrderDetailModel>()
+          .map((doc) =>
+              OrderDetailModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
 
       return orders;
@@ -53,55 +59,34 @@ class GetOrderDetails {
 
   static Future<List<OrderDetailModel>> getDeliveredOrders() async {
     try {
-      CollectionReference ordersRef = AuthApi.orders;
+      QuerySnapshot snapshot = await AuthApi.orders
+          .where("ownerID", isEqualTo: AuthApi.currentAdmin!.uid)
+          .where("tracking.stage", isEqualTo: "Delivered")
+          .get();
 
-      QuerySnapshot snapshot = await ordersRef.get();
-
-      List<OrderDetailModel> orders = snapshot.docs
-          .map((doc) {
-            OrderDetailModel order =
-                OrderDetailModel.fromJson(doc.data() as Map<String, dynamic>);
-            if (order.tracking != null &&
-                order.tracking!.stage == "Delivered") {
-              return order;
-            } else {
-              return null;
-            }
-          })
-          .whereType<OrderDetailModel>()
+      return snapshot.docs
+          .map((doc) =>
+              OrderDetailModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
-
-      return orders;
     } catch (e) {
-      log('Error fetching orders: $e');
+      log('Error fetching delivered orders: $e');
       return [];
     }
   }
 
   static Future<List<OrderDetailModel>> getOrdersUpdatable() async {
     try {
-      CollectionReference ordersRef = AuthApi.orders;
+      QuerySnapshot snapshot = await AuthApi.orders
+          .where("ownerID", isEqualTo: AuthApi.currentAdmin!.uid)
+          .where("tracking.stage",
+              whereNotIn: ["Order Confirmed", "Delivered"]).get();
 
-      QuerySnapshot snapshot = await ordersRef.get();
-
-      List<OrderDetailModel> orders = snapshot.docs
-          .map((doc) {
-            OrderDetailModel order =
-                OrderDetailModel.fromJson(doc.data() as Map<String, dynamic>);
-            if (order.tracking != null &&
-                order.tracking!.stage != "Order Confirmed" &&
-                order.tracking!.stage != "Delivered") {
-              return order;
-            } else {
-              return null;
-            }
-          })
-          .whereType<OrderDetailModel>()
+      return snapshot.docs
+          .map((doc) =>
+              OrderDetailModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
-
-      return orders;
     } catch (e) {
-      log('Error fetching orders: $e');
+      log('Error fetching updatable orders: $e');
       return [];
     }
   }
@@ -109,15 +94,33 @@ class GetOrderDetails {
   static Future<TrackingModel?> getTrackingModelByOrderId(
       String orderId) async {
     try {
-      DocumentReference orderRef = AuthApi.orders.doc(orderId);
-      DocumentSnapshot snapshot = await orderRef.get();
+      DocumentSnapshot snapshot = await AuthApi.orders.doc(orderId).get();
 
-      if (snapshot.exists) {
-        OrderDetailModel order =
-            OrderDetailModel.fromJson(snapshot.data() as Map<String, dynamic>);
-        return order.tracking;
+      if (!snapshot.exists) {
+        log('Order not found: $orderId');
+        return null;
       }
-      return null;
+
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+      if (data['tracking'] == null) {
+        log('Tracking data not found for order: $orderId');
+        return null;
+      }
+      Map<String, dynamic> trackingData = data['tracking'];
+      trackingData['updated_at'] = trackingData['updated_at'] is Timestamp
+          ? trackingData['updated_at']
+          : null;
+
+      if (trackingData['updatedStages'] is Map) {
+        trackingData['updatedStages'].forEach((key, value) {
+          if (value is! Timestamp) {
+            trackingData['updatedStages'][key] = null;
+          }
+        });
+      }
+
+      return TrackingModel.fromJson(trackingData);
     } catch (e) {
       log('Error fetching tracking data for order $orderId: $e');
       return null;

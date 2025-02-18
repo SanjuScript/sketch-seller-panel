@@ -1,4 +1,5 @@
 import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/get_order_pending_stream.dart';
+import 'package:drawer_panel/HELPERS/CONSTANTS/asset_helper.dart';
 import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
 import 'package:drawer_panel/WIDGETS/CARDS/order_processor_card.dart';
 import 'package:drawer_panel/WIDGETS/custom_cached_image_displayer.dart';
@@ -32,8 +33,7 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
           future: _ordersFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                  child: CircularProgressIndicator()); // Loading state
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return const Center(child: Text("Error loading orders"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -59,3 +59,4 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
     );
   }
 }
+

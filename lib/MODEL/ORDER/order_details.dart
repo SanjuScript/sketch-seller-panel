@@ -6,7 +6,6 @@ import 'package:drawer_panel/MODEL/ORDER/tracking_details.dart';
 import 'package:drawer_panel/MODEL/ORDER/transaction_model.dart';
 import 'package:drawer_panel/MODEL/user_model.dart';
 
-
 class OrderDetailModel {
   OrderDetailModel({
     required this.orderTime,
@@ -16,9 +15,13 @@ class OrderDetailModel {
     required this.orderId,
     required this.selectedImage,
     required this.ownerId,
+    required this.userID,
     required this.productDetails,
+    required this.adminToken,
     required this.userDetails,
     required this.tracking,
+    required this.deliveryWithin,
+    required this.problem,
     required this.status,
   });
 
@@ -30,6 +33,18 @@ class OrderDetailModel {
 
   final String orderId;
   static const String orderIdKey = "orderID";
+
+  final String adminToken;
+  static const String adminTokenKey = "adminToken";
+
+  final String userID;
+  static const String userIDKey = "userID";
+
+  final String problem;
+  static const String problemKey = "problem";
+
+  final int deliveryWithin;
+  static const String deliveryWithinKey = "deliveryWithin";
 
   final String selectedImage;
   static const String selectedImageKey = "selectedImage";
@@ -59,8 +74,12 @@ class OrderDetailModel {
     DateTime? orderTime,
     AddressModel? address,
     String? orderId,
+    String? problem,
+    int? deliveryWithin,
+    String? userID,
     String? selectedImage,
     String? ownerId,
+    String? adminToken,
     ProductDetailsModel? productDetails,
     UserDataModel? userDetails,
     TrackingModel? tracking,
@@ -71,7 +90,11 @@ class OrderDetailModel {
     return OrderDetailModel(
       orderTime: orderTime ?? this.orderTime,
       address: address ?? this.address,
+      adminToken: adminToken ?? this.adminToken,
+      userID: userID ?? this.userID,
       orderId: orderId ?? this.orderId,
+      problem: problem ?? this.problem,
+      deliveryWithin: deliveryWithin ?? this.deliveryWithin,
       transactionModel: transactionModel ?? this.transactionModel,
       paymentModel: paymentModel ?? this.paymentModel,
       selectedImage: selectedImage ?? this.selectedImage,
@@ -92,7 +115,11 @@ class OrderDetailModel {
           ? null
           : AddressModel.fromMap(json["address"]),
       orderId: json["orderID"] ?? "",
+      userID: json["userID"] ?? "",
       selectedImage: json["selectedImage"] ?? "",
+      adminToken: json["adminToken"] ?? "",
+      problem: json["problem"] ?? "",
+      deliveryWithin: json['delivery_within'] ?? 0,
       ownerId: json["ownerID"] ?? "",
       productDetails: json["productDetails"] == null
           ? null
@@ -117,6 +144,10 @@ class OrderDetailModel {
         "orderTime": orderTime?.toIso8601String(),
         "address": address?.toMap(),
         "orderID": orderId,
+        "userID": userID,
+        "problem": problem,
+        "adminToken": adminToken,
+        "delivery_within": deliveryWithin,
         "transaction": transactionModel!.toJson(),
         "payment": paymentModel!.toMap(),
         "selectedImage": selectedImage,

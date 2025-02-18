@@ -29,8 +29,10 @@ class AuthApi {
       throw FirebaseAuthException(
           code: 'no-current-user', message: 'No authenticated user found.');
     }
-    return currentAdminDoc.collection('orders');
+    return FirebaseFirestore.instance.collection('Orders');
   }
+
+
 
   static final FirebaseStorage storage = FirebaseStorage.instance;
   static DocumentReference documentRef = FirebaseFirestore.instance

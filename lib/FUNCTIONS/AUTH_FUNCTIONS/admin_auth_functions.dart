@@ -33,7 +33,7 @@ class AuthenticationFn {
           await _auth.signInWithCredential(credential);
 
       // if (userCredential.additionalUserInfo?.isNewUser ?? false) {
-      log("New Login");
+
       var adminDoc = await _firestore
           .collection('admins')
           .doc(userCredential.user?.uid)
@@ -52,17 +52,13 @@ class AuthenticationFn {
           'profile': userCredential.user?.photoURL,
           'createdAt': Timestamp.now(),
           'total_earned': 0,
-          'total_deliveries': 0,
-          'pending': 0
         });
       }
       showToast("Google sign-up successful!");
-
       return "Google sign-up successful!";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         showToast("Account exists with a different credential.");
-
         return "Account exists with a different credential.";
       } else if (e.code == 'invalid-credential') {
         showToast("Invalid credential.");
@@ -74,7 +70,6 @@ class AuthenticationFn {
     } catch (e) {
       log(e.toString());
       showToast("An unknown error occurred. Please try again.");
-
       return "An unknown error occurred. Please try again.";
     }
   }

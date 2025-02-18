@@ -11,6 +11,7 @@ class GetAsset {
   static const wb6 = "assets/images/wb6.jpeg";
   static const gl1 = "assets/images/gl1.jpeg";
   static const dr1 = "assets/images/dr1.jpeg";
+  static const noOrder = "assets/images/no_orders.webp";
 
   static const List<String> allWbAssets = [];
 }
@@ -35,4 +36,3 @@ class _GetNotifImg {
   final String uploadSuccess = "assets/images/NElements/upload_success.png";
   final String uploadFailed = "assets/images/NElements/upload_failed.png";
 }
-

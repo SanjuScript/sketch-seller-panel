@@ -17,6 +17,7 @@ class StepperWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: AnotherStepper(
@@ -28,23 +29,29 @@ class StepperWidget extends StatelessWidget {
               orderDetailModel.tracking?.updatedStages[status.title];
 
           return StepperData(
-            title: StepperText(
-              status.title,
-              textStyle: TextStyle(
-                color: Colors.black,
-                fontWeight: stepIndex == currentStep
-                    ? FontWeight.bold
-                    : FontWeight.normal,
-              ),
-            ),
+            title: StepperText(status.title,
+                // textStyle:  TextStyle(
+                //   color: Colors.black,
+                // fontWeight: stepIndex == currentStep
+                //     ? FontWeight.bold
+                //     : FontWeight.normal,
+                // ),
+                textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.black,
+                      fontSize: size.width * .045,
+                      fontWeight: stepIndex == currentStep
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    )),
             subtitle: StepperText(
               updatedTime != null
                   ? "${status.subtitle}\n${DateFormatHelper.formatDateTime(updatedTime)}"
                   : '',
-              textStyle: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12,
-              ),
+              textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    fontSize: size.width * .036,
+                    fontWeight: FontWeight.normal,
+                    letterSpacing: 0,
+                  ),
             ),
             iconWidget: CircleAvatar(
               backgroundColor: stepIndex < currentStep

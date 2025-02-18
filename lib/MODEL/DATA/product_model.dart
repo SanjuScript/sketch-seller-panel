@@ -13,24 +13,30 @@ class Product {
   List<DrawingTypeModel>? drawingTypes;
   Timestamp? createdAt;
   bool? isAvailable;
+  num? revenue;
   bool? inOffer;
   List<ReviewModel>? reviews;
   int? totalReviewCount;
   List<String>? images;
   String? categoryId;
+  String? offermsg;
   String? artTypeId;
-  double? avgRating;
+  num? avgRating;
+  int? totalOrders;
 
   Product({
     this.productId,
     this.ownerID,
     this.title,
+    this.totalOrders,
+    this.offermsg,
     this.avgRating,
     this.artTypeId,
     this.categoryId,
     this.drawingTypes,
     this.artist,
     this.description,
+    this.revenue,
     this.createdAt,
     this.isAvailable,
     this.inOffer,
@@ -49,8 +55,11 @@ class Product {
         json['description'] != null ? json['description'] as String : '';
     return Product(
       productId: json['productId'] as String,
-      avgRating: json['avgRating'] as double? ?? 0.0,
+      offermsg: json['offermsg'] as String,
+      avgRating: json['avgRating'] as num? ?? 0.0,
+      revenue: json['revenue'] as num? ?? 0.0,
       ownerID: ownerID,
+      totalOrders: json['totalOrders'] as int ?? 0,
       description: description,
       artist: json['artist'] as String,
       title: json['title'] as String?,
@@ -76,8 +85,11 @@ class Product {
     return {
       'title': title,
       'artist': artist,
+      'offermsg': offermsg,
       'avgRating': avgRating,
+      'revenue': revenue,
       'ownerID': ownerID,
+      'totalOrders': totalOrders,
       'description': description,
       'categoryId': categoryId,
       'artTypeId': artTypeId,

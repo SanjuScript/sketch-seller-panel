@@ -15,7 +15,6 @@ class PremiumDrawer extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
           children: [
-            // Profile Section
             Container(
               padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
@@ -28,7 +27,6 @@ class PremiumDrawer extends StatelessWidget {
               child: UserProfile(),
             ),
             const SizedBox(height: 20),
-            // Drawer Items
             ListTile(
               leading: const Icon(Icons.home, color: Colors.white),
               title: const Text(
@@ -37,17 +35,6 @@ class PremiumDrawer extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings, color: Colors.white),
-              title: const Text(
-                'Settings',
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                // Navigate to Settings screen.
               },
             ),
             ListTile(
@@ -61,7 +48,6 @@ class PremiumDrawer extends StatelessWidget {
               },
             ),
             const Divider(color: Colors.white, thickness: 0.5),
-            // Footer Section
             const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
