@@ -1,15 +1,17 @@
 import 'dart:developer';
-
-import 'package:another_stepper/dto/stepper_data.dart';
-import 'package:another_stepper/widgets/another_stepper.dart';
 import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/update_order_fn.dart';
 import 'package:drawer_panel/HELPERS/CONSTANTS/show_toast.dart';
 import 'package:drawer_panel/HELPERS/CONSTANTS/status_getters.dart';
+import 'package:drawer_panel/HELPERS/date_formater.dart';
 import 'package:drawer_panel/MODEL/HELPER/status_model.dart';
 import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
+import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/VIEW_ONE/ordered_picture.dart';
+import 'package:drawer_panel/WIDGETS/CARDS/show_user_info_card.dart';
 import 'package:drawer_panel/WIDGETS/ORDER_ELEMENTS/stepper_widget.dart';
 import 'package:drawer_panel/WIDGETS/ORDER_ELEMENTS/tracking_list.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:drawer_panel/WIDGETS/custom_cached_image_displayer.dart';
+import 'package:drawer_panel/WIDGETS/delivery_time_updater.dart';
+import 'package:drawer_panel/WIDGETS/helper_text.dart';
 import 'package:flutter/material.dart';
 
 class OrderUpdatingScreen extends StatefulWidget {
@@ -48,7 +50,7 @@ class _OrderUpdatingScreenState extends State<OrderUpdatingScreen> {
     int _currentStep = _getCurrentStep();
     List<StatusModel> statuses = StatusDataGetter.getStatuses(currentStage);
     List<StatusModel> dropStatuses = StatusDataGetter.getStatusesForDropDown();
-
+    Size size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(
@@ -90,15 +92,34 @@ class _OrderUpdatingScreenState extends State<OrderUpdatingScreen> {
                 ),
               ),
               const SizedBox(height: 5),
+              ShowUserInfoCard(orderDetailModel: widget.orderDetailModel),
               StepperWidget(
                   orderDetailModel: widget.orderDetailModel,
                   statuses: statuses,
                   currentStep: _currentStep),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: HelperText1(
+                  text:
+                      "Estimated Delivery : ${DateFormatHelper.formatDateWithTime(widget.orderDetailModel.estimatedDelivery ?? widget.orderDetailModel.orderTime!.add(const Duration(days: 7)))}",
+                  fontSize: 14,
+                ),
+              ),
+              UpdateDeliveryTimeWidget(
+                orderDetailModel: widget.orderDetailModel,
+                onUpdateDelivery: (tim) {
+                  log(tim.toString());
+                  UpdateOrderDetails.updateOrderDeliveryTime(
+                    orderId: widget.orderDetailModel.orderId,
+                    additionalDays: tim,
+                  );
+                },
+              ),
               OrderTrackingDetailDispalyer(
                 orderId: widget.orderDetailModel.orderId,
                 userId: widget.orderDetailModel.userDetails!.uid!,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
@@ -216,7 +237,7 @@ class _OrderUpdatingScreenState extends State<OrderUpdatingScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),

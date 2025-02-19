@@ -14,6 +14,10 @@ class DateFormatHelper {
     final DateFormat formatter = DateFormat('dd MMM yyyy');
     return formatter.format(date);
   }
+  static String formatDateWithTime(DateTime date) {
+    final DateFormat formatter = DateFormat('dd MMM yyyy HH:mm:ss');
+    return formatter.format(date);
+  }
 
   static String formatDateToISO(DateTime date) {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');

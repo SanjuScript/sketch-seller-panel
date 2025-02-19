@@ -30,12 +30,7 @@ class StepperWidget extends StatelessWidget {
 
           return StepperData(
             title: StepperText(status.title,
-                // textStyle:  TextStyle(
-                //   color: Colors.black,
-                // fontWeight: stepIndex == currentStep
-                //     ? FontWeight.bold
-                //     : FontWeight.normal,
-                // ),
+               
                 textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Colors.black,
                       fontSize: size.width * .045,

@@ -3,6 +3,7 @@ import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
 import 'package:drawer_panel/SCREENS/NAV_SCREENS/ORDERS/VIEW_ONE/ordered_picture.dart';
 import 'package:drawer_panel/WIDGETS/custom_cached_image_displayer.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class OrderPendingCard extends StatelessWidget {
   final OrderDetailModel orderDetailModel;
@@ -21,7 +22,8 @@ class OrderPendingCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OrderedPictureScreen(orderDetailModel: orderDetailModel),
+            builder: (context) =>
+                OrderedPictureScreen(orderDetailModel: orderDetailModel),
           ),
         );
       },
@@ -43,17 +45,33 @@ class OrderPendingCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              height: size.height * .10,
-              width: size.width * .23,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.grey[300],
-              ),
-              child: CustomCachedImageDisplayer(
-                imageUrl: orderDetailModel.productDetails?.productImage ?? '',
-                borderRadius: BorderRadius.circular(10),
-              ),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                CustomCachedImageDisplayer(
+                  height: size.height * .10,
+                  width: size.width * .23,
+                  imageUrl: orderDetailModel.productDetails?.productImage ?? '',
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                Positioned(
+                  left: 10,
+                  top: 8,
+                  child: Transform.rotate(
+                    angle: -pi / 12,
+                    child: Hero(
+                      transitionOnUserGestures: true,
+                      tag: orderDetailModel.adminToken,
+                      child: CustomCachedImageDisplayer(
+                        height: size.height * .09,
+                        width: size.width * .22,
+                        imageUrl: orderDetailModel.selectedImage ?? '',
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -72,22 +90,20 @@ class OrderPendingCard extends StatelessWidget {
                           color: Colors.black87,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.orange.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            orderDetailModel.status ?? '',
-                            style: TextStyle(
-                              color: Colors.orange,
-                              fontWeight: FontWeight.bold,
-                              fontSize: size.width * .04,
-                            ),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 6, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          orderDetailModel.status ?? '',
+                          style: TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
+                            fontSize: size.width * .04,
                           ),
                         ),
                       ),
@@ -109,10 +125,14 @@ class OrderPendingCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+                      const Icon(Icons.calendar_today,
+                          size: 16, color: Colors.grey),
                       const SizedBox(width: 5),
                       Text(
-                        orderDetailModel.orderTime != null ? DateFormatHelper.formatFullDate(orderDetailModel.orderTime!) : '',
+                        orderDetailModel.orderTime != null
+                            ? DateFormatHelper.formatDateWithTime(
+                                orderDetailModel.orderTime!)
+                            : '',
                         style: TextStyle(
                           fontSize: size.width * .04,
                           color: Colors.black54,

@@ -57,6 +57,17 @@ class GetOrderDetails {
     }
   }
 
+  static Stream<bool> hasOrderIssue(String orderId) {
+    return AuthApi.orders.doc(orderId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        return data.containsKey('problem') &&
+            (data['problem'] ?? "").isNotEmpty;
+      }
+      return false;
+    });
+  }
+
   static Future<List<OrderDetailModel>> getDeliveredOrders() async {
     try {
       QuerySnapshot snapshot = await AuthApi.orders

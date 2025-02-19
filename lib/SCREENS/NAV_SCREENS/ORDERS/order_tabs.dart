@@ -70,7 +70,6 @@ class OrderTabs extends StatelessWidget {
             ),
           ),
           child: const TabBarView(
-            physics: BouncingScrollPhysics(),
             children: [
               OrdersScreen(),
               OrderProcessingScreen(),

@@ -23,6 +23,7 @@ class OrderDetailModel {
     required this.deliveryWithin,
     required this.problem,
     required this.status,
+    required this.estimatedDelivery,
   });
 
   final DateTime? orderTime;
@@ -33,6 +34,9 @@ class OrderDetailModel {
 
   final String orderId;
   static const String orderIdKey = "orderID";
+
+  final DateTime? estimatedDelivery;
+  static const String estimatedDeliveryKey = "estimatedDelivery";
 
   final String adminToken;
   static const String adminTokenKey = "adminToken";
@@ -77,6 +81,7 @@ class OrderDetailModel {
     String? problem,
     int? deliveryWithin,
     String? userID,
+    DateTime? estimatedDelivery,
     String? selectedImage,
     String? ownerId,
     String? adminToken,
@@ -89,6 +94,7 @@ class OrderDetailModel {
   }) {
     return OrderDetailModel(
       orderTime: orderTime ?? this.orderTime,
+      estimatedDelivery: estimatedDelivery ?? this.estimatedDelivery,
       address: address ?? this.address,
       adminToken: adminToken ?? this.adminToken,
       userID: userID ?? this.userID,
@@ -110,6 +116,9 @@ class OrderDetailModel {
     return OrderDetailModel(
       orderTime: json["orderTime"] != null
           ? (json["orderTime"] as Timestamp).toDate()
+          : null,
+      estimatedDelivery: json["estimated_delivery"] != null
+          ? (json["estimated_delivery"] as Timestamp).toDate()
           : null,
       address: json["address"] == null
           ? null
@@ -145,9 +154,10 @@ class OrderDetailModel {
         "address": address?.toMap(),
         "orderID": orderId,
         "userID": userID,
-        "problem": problem,
-        "adminToken": adminToken,
-        "delivery_within": deliveryWithin,
+        "estimated_delivery":estimatedDelivery?.toIso8601String(),
+        "problem":problem,
+        "adminToken":adminToken,
+        "delivery_within":deliveryWithin,
         "transaction": transactionModel!.toJson(),
         "payment": paymentModel!.toMap(),
         "selectedImage": selectedImage,

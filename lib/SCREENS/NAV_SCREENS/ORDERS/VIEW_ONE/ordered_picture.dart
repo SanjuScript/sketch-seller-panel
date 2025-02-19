@@ -1,20 +1,26 @@
 import 'dart:developer';
 
+import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/get_order_pending_stream.dart';
 import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/update_order_fn.dart';
 import 'package:drawer_panel/HELPERS/date_formater.dart';
 import 'package:drawer_panel/MODEL/ORDER/address_model.dart';
 import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
 import 'package:drawer_panel/PROVIDER/image_downloader_provider.dart';
 import 'package:drawer_panel/WIDGETS/BUTTONS/custom_button.dart';
+import 'package:drawer_panel/WIDGETS/CARDS/image_problem_card.dart';
+import 'package:drawer_panel/WIDGETS/DIALOGS/image_problem.dart';
 import 'package:drawer_panel/WIDGETS/DIALOGS/mark_as_started_dialogue.dart';
 import 'package:drawer_panel/WIDGETS/ORDER_ELEMENTS/order_details_displayer.dart';
+import 'package:drawer_panel/WIDGETS/address_builders.dart';
 import 'package:drawer_panel/WIDGETS/custom_cached_image_displayer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class OrderedPictureScreen extends StatelessWidget {
   final OrderDetailModel orderDetailModel;
-  const OrderedPictureScreen({super.key, required this.orderDetailModel});
+  final bool showButton;
+  const OrderedPictureScreen(
+      {super.key, required this.orderDetailModel, this.showButton = true});
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +53,14 @@ class OrderedPictureScreen extends StatelessWidget {
                 ],
               ),
               alignment: Alignment.bottomCenter,
-              child: CustomCachedImageDisplayer(
-                width: size.width * 0.9,
-                height: size.height * 0.4,
-                imageUrl: orderDetailModel.selectedImage,
-                borderRadius: BorderRadius.circular(12),
+              child: Hero(
+                tag: orderDetailModel.adminToken,
+                child: CustomCachedImageDisplayer(
+                  width: size.width * 0.9,
+                  height: size.height * 0.4,
+                  imageUrl: orderDetailModel.selectedImage,
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -138,6 +147,16 @@ class OrderedPictureScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+            ImageIssueButton(
+              orderID: orderDetailModel.orderId,
+              onIssueSelected: (msg) async {
+                UpdateOrderDetails.updateOrderProblem(
+                    orderId: orderDetailModel.orderId,
+                    problemMessage: msg,
+                    nfToken: orderDetailModel.userDetails!.nfToken ?? '');
+              },
+            ),
+            const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -224,7 +243,8 @@ class OrderedPictureScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      ..._buildAddressDetails(orderDetailModel.address),
+                      ...AddressHelpers.buildAddressDetails(
+                          orderDetailModel.address),
                       const SizedBox(height: 10),
                       Text(
                         "Address",
@@ -235,7 +255,8 @@ class OrderedPictureScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      ..._buildFullAddress(orderDetailModel.address),
+                      ...AddressHelpers.buildFullAddress(
+                          orderDetailModel.address),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -243,60 +264,32 @@ class OrderedPictureScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            CustomButton(
-              text: "Mark As Started",
-              onPressed: () {
-                showMarkAsStartedDialogue(
-                  context: context,
-                  onConfirm: () {
-                    log(orderDetailModel.userDetails!.uid.toString());
-                    UpdateOrderDetails.updateTrackingStage(
-                        orderDetailModel.userDetails!,
-                        orderDetailModel.orderId,
-                        "Drawing Started");
-                  },
-                );
-              },
-              gradientColors: [
-                Colors.deepOrangeAccent[100]!,
-                Colors.deepPurple
-              ],
-              icon: Icons.done_all,
-              showLeading: true,
-            ),
+            if (showButton)
+              CustomButton(
+                text: "Mark As Started",
+                onPressed: () {
+                  showMarkAsStartedDialogue(
+                    context: context,
+                    onConfirm: () {
+                      log(orderDetailModel.userDetails!.uid.toString());
+                      UpdateOrderDetails.updateTrackingStage(
+                          orderDetailModel.userDetails!,
+                          orderDetailModel.orderId,
+                          "Drawing Started");
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+                gradientColors: [
+                  Colors.deepOrangeAccent[100]!,
+                  Colors.deepPurple
+                ],
+                icon: Icons.done_all,
+                showLeading: true,
+              ),
           ],
         ),
       ),
     );
-  }
-
-  List<Widget> _buildAddressDetails(AddressModel? address) {
-    Map<String, String?> details = {
-      "Name:": address?.name,
-      "Phone:": address?.phone,
-      "Alternate Phone:": address?.alternatePhone ?? "Not Provided",
-      "Address Type:": address?.addressType,
-    };
-
-    return details.entries.map((entry) {
-      return OrderDetailsDisplayer(
-          lines: 2, label: entry.key, value: entry.value ?? "N/A");
-    }).toList();
-  }
-
-  List<Widget> _buildFullAddress(AddressModel? address) {
-    Map<String, String?> details = {
-      "House No:": address?.house,
-      "Road:": address?.road,
-      "Landmark:": address?.landmark,
-      "City:": address?.city,
-      "State:": address?.state,
-      "PIN:": address?.pin,
-    };
-
-    return details.entries.map((entry) {
-      return OrderDetailsDisplayer(
-          lines: 2, label: entry.key, value: entry.value ?? "N/A");
-    }).toList();
   }
 }

@@ -101,4 +101,41 @@ class UpdateOrderDetails {
       Fluttertoast.showToast(msg: "Failed to delete stage!");
     }
   }
+
+  static Future<void> updateOrderProblem({
+    required String orderId,
+    required String problemMessage,
+    required String nfToken,
+  }) async {
+    try {
+      CollectionReference ordersRef = AuthApi.orders;
+
+      await ordersRef.doc(orderId).update({
+        'problem': problemMessage,
+      });
+      SendNotification.toSpecificOne(
+          nfToken, "Your order has an issue", problemMessage);
+      showToast("Problem updated successfully for Order ID: $orderId");
+    } catch (e) {
+      log('Error updating order problem: $e');
+    }
+  }
+
+  static Future<void> updateOrderDeliveryTime({
+    required String orderId,
+    required int additionalDays,
+  }) async {
+    try {
+      DocumentReference orderRef = AuthApi.orders.doc(orderId);
+
+      await orderRef.update({
+        'delivery_within': additionalDays,
+        'estimated_delivery': DateTime.now().add(Duration(days: additionalDays))
+      });
+
+      showToast("Delivery time updated successfully for Order ID: $orderId");
+    } catch (e) {
+      log('Error updating delivery time: $e');
+    }
+  }
 }
