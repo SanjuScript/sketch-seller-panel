@@ -11,35 +11,33 @@ class GetCatogoriesFN {
     static final String userID = AuthApi.auth.currentUser!.uid;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  static Future<CategoryModel?> getCategoryByName(String categoryName) async {
-    try {
-      log("Name: $categoryName");
-      String userId = AuthApi.auth.currentUser!.uid;
-      final categoryDoc =
-          AuthApi.admins.doc(userId).collection('categories').doc(categoryName);
+ static Stream<CategoryModel?> getCategoryByName(String categoryName) {
+  try {
+    log("Listening to changes for category: $categoryName");
+    String userId = AuthApi.auth.currentUser!.uid;
+    
+    final categoryDoc = AuthApi.admins
+        .doc(userId)
+        .collection('categories')
+        .doc(categoryName);
 
-      final categorySnapshot = await categoryDoc.get();
-
-      if (categorySnapshot.exists) {
-        Map<String, dynamic> categoryData = categorySnapshot.data()!;
-        // log(categoryData.toString(), name: "Category Data");
-        log("Name :${categoryData['name']}", name: "Category name");
-
-        CategoryModel categoryModel = CategoryModel.fromJson(categoryData);
-
-        // log(categoryModel.toString(), name: "Category Model Data");
-
-        return categoryModel;
+    return categoryDoc.snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        Map<String, dynamic> categoryData = snapshot.data()!;
+        log("Updated Category: ${categoryData['name']}", name: "Category Stream");
+        return CategoryModel.fromJson(categoryData);
       } else {
         log('Category does not exist', name: "Error");
         return null;
       }
-    } catch (e, stackTrace) {
-      log("Error: $e", name: "Exception");
-      log("Stack Trace: $stackTrace", name: "Exception Stack Trace");
-      return null;
-    }
+    });
+  } catch (e, stackTrace) {
+    log("Error: $e", name: "Exception");
+    log("Stack Trace: $stackTrace", name: "Exception Stack Trace");
+    return const Stream.empty(); // Return an empty stream on error
   }
+}
+
 
   static Future<List<ArtTypeModel>> getTypesByName(
       String categoryName, String typeName) async {

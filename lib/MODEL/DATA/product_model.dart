@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drawer_panel/MODEL/DATA/drawing_type_model.dart';
 import 'package:drawer_panel/MODEL/DATA/product_size_model.dart';
-import 'package:drawer_panel/MODEL/DATA/review_model.dart';
 import 'package:drawer_panel/MODEL/json_parser_model.dart';
 
 class Product {
@@ -15,7 +14,6 @@ class Product {
   bool? isAvailable;
   num? revenue;
   bool? inOffer;
-  List<ReviewModel>? reviews;
   int? totalReviewCount;
   List<String>? images;
   String? categoryId;
@@ -40,7 +38,6 @@ class Product {
     this.createdAt,
     this.isAvailable,
     this.inOffer,
-    this.reviews,
     this.totalReviewCount = 0,
     this.images,
   });
@@ -72,10 +69,6 @@ class Product {
       createdAt: json['createdAt'] as Timestamp?,
       isAvailable: json['isAvailable'] as bool?,
       inOffer: json['inOffer'] as bool?,
-      reviews: JsonParser.parseList(
-        json['reviews'],
-        (data) => ReviewModel.fromJson(data),
-      ),
       totalReviewCount: json['totalReviewCount'] as int? ?? 0,
       images: (json['images'] as List<dynamic>?)?.cast<String>(),
     );
@@ -98,7 +91,6 @@ class Product {
       'createdAt': createdAt,
       'isAvailable': isAvailable,
       'inOffer': inOffer,
-      'reviews': reviews?.map((review) => review.toJson()).toList(),
       'totalReviewCount': totalReviewCount,
       'images': images,
     };
@@ -106,6 +98,6 @@ class Product {
 
   @override
   String toString() {
-    return 'Product(productId: $productId, title: $title, artist: $artist, drawingTypes: $drawingTypes, createdAt: $createdAt, isAvailable: $isAvailable, inOffer: $inOffer, reviews: $reviews, totalReviewCount: $totalReviewCount, images: $images description : $description ownerID : $ownerID';
+    return 'Product(productId: $productId, title: $title, artist: $artist, drawingTypes: $drawingTypes, createdAt: $createdAt, isAvailable: $isAvailable, inOffer: $inOffer, totalReviewCount: $totalReviewCount, images: $images description : $description ownerID : $ownerID';
   }
 }

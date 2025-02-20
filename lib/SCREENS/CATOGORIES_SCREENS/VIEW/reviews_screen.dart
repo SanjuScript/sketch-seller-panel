@@ -44,7 +44,7 @@ class NikeReviewsView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
+        title: const Text(
           'Nike Air Force 1 \'07',
         
         ),

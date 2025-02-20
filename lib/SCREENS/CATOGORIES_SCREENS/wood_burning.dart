@@ -22,7 +22,7 @@ class WoodBurningScreen extends StatefulWidget {
 
 class _WoodBurningScreenState extends State<WoodBurningScreen> {
   final String categoryName = "Wood Burning";
-  late Future<CategoryModel?> _categoryData;
+  late Stream<CategoryModel?> _categoryData;
 
   @override
   void initState() {
@@ -41,13 +41,13 @@ class _WoodBurningScreenState extends State<WoodBurningScreen> {
         ),
         backgroundColor: Colors.grey[200],
         body: networkProvider.isConnected
-            ? FutureBuilder<CategoryModel?>(
-                future: _categoryData,
+            ? StreamBuilder<CategoryModel?>(
+                stream: _categoryData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return  Center(
+                    return Center(
                         child: LottieAnimationWidget(
-                            animationPath:GetAsset.lottie.loader));
+                            animationPath: GetAsset.lottie.loader));
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData) {
@@ -69,7 +69,7 @@ class _WoodBurningScreenState extends State<WoodBurningScreen> {
                     }
                   }
                   sortOptions = sortOptions.toSet().toList();
-                  log(sortOptions.toString(),name: "SORT OPTION");
+                  log(sortOptions.toString(), name: "SORT OPTION");
                   return ArtStyleScreen(
                     sortOptions: sortOptions,
                     artTypes: artStyles,

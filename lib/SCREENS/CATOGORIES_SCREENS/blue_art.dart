@@ -20,7 +20,7 @@ class BlueArtScreen extends StatefulWidget {
 
 class _BlueArtScreenState extends State<BlueArtScreen> {
   final String categoryName = "Blue Art";
-  late Future<CategoryModel?> _categoryData;
+  late Stream<CategoryModel?> _categoryData;
 
   @override
   void initState() {
@@ -39,8 +39,8 @@ class _BlueArtScreenState extends State<BlueArtScreen> {
         ),
         backgroundColor: Colors.grey[200],
         body: networkProvider.isConnected
-            ? FutureBuilder<CategoryModel?>(
-                future: _categoryData,
+            ? StreamBuilder<CategoryModel?>(
+                stream: _categoryData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(

@@ -22,7 +22,7 @@ class ResinArtScreen extends StatefulWidget {
 
 class _ResinArtScreenState extends State<ResinArtScreen> {
   final String categoryName = "Resin Art";
-  late Future<CategoryModel?> _categoryData;
+  late Stream<CategoryModel?> _categoryData;
 
   @override
   void initState() {
@@ -41,8 +41,8 @@ class _ResinArtScreenState extends State<ResinArtScreen> {
         ),
         backgroundColor: Colors.grey[200],
         body: networkProvider.isConnected
-            ? FutureBuilder<CategoryModel?>(
-                future: _categoryData,
+            ? StreamBuilder<CategoryModel?>(
+                stream: _categoryData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return  Center(

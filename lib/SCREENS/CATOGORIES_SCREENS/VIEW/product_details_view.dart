@@ -3,6 +3,7 @@ import 'package:drawer_panel/MODEL/DATA/art_type_model.dart';
 import 'package:drawer_panel/PROVIDER/VIEW/drawing_type_selector.dart';
 import 'package:drawer_panel/PROVIDER/product_slider_provider.dart';
 import 'package:drawer_panel/SCREENS/CATOGORIES_SCREENS/VIEW/analytics_screen.dart';
+import 'package:drawer_panel/SCREENS/CATOGORIES_SCREENS/VIEW/editing_screen.dart';
 import 'package:drawer_panel/WIDGETS/CATOGORIES/VIEW/analytics_cards.dart';
 import 'package:drawer_panel/WIDGETS/CATOGORIES/VIEW/drawing_type_selector.dart';
 import 'package:drawer_panel/WIDGETS/CATOGORIES/VIEW/product_images_displayer.dart';
@@ -48,6 +49,18 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           product.title ?? "Product Details",
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProductEditingScreen(
+                          artTypeModel: widget.artTypeModel)));
+            },
+            icon: const Icon(Icons.edit),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -130,6 +143,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         AnalyticsCards(
                             title: "Revenue",
                             value: "₹${(product.revenue ?? '0')}"),
+                        AnalyticsCards(
+                            title: "Reviews",
+                            value: product.totalReviewCount.toString()),
                       ],
                     ),
                   ),

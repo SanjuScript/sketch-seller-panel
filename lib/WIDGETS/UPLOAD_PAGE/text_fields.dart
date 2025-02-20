@@ -72,7 +72,7 @@ class _CustomTextFieldsState extends State<CustomTextFields> {
           onChanged: (_) => _validateField(),
           decoration: InputDecoration(
             errorText: errorText,
-            prefixIcon: Icon(widget.icon, color: Colors.teal),
+            prefixIcon: Icon(widget.icon, color: Colors.deepPurple),
             hintText: widget.hint,
             hintStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                   letterSpacing: 0,
@@ -82,15 +82,16 @@ class _CustomTextFieldsState extends State<CustomTextFields> {
             contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
-              borderSide: const BorderSide(color: Colors.teal),
+              borderSide: const BorderSide(color: Colors.deepPurple),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
-              borderSide: const BorderSide(color: Colors.teal),
+              borderSide: const BorderSide(color: Colors.deepPurple),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
-              borderSide: const BorderSide(color: Colors.teal, width: 2.0),
+              borderSide:
+                  const BorderSide(color: Colors.deepPurple, width: 2.0),
             ),
           ),
         ),
@@ -130,7 +131,7 @@ class CustomTFieldUploadPage extends StatelessWidget {
           borderSide: const BorderSide(color: Colors.deepPurple, width: 2.0),
         ),
       ),
-      onChanged:onChanged,
+      onChanged: onChanged,
     );
   }
 }
