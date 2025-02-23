@@ -7,34 +7,70 @@ import 'package:drawer_panel/MODEL/DATA/catogory_model.dart';
 
 class GetCatogoriesFN {
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    static final String name = AuthApi.auth.currentUser!.displayName ?? '';
-    static final String userID = AuthApi.auth.currentUser!.uid;
+  static final String name = AuthApi.auth.currentUser!.displayName ?? '';
+  static final String userID = AuthApi.auth.currentUser!.uid;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
- static Stream<CategoryModel?> getCategoryByName(String categoryName) {
-  try {
-    log("Listening to changes for category: $categoryName");
-    String userId = AuthApi.auth.currentUser!.uid;
-    
-    final categoryDoc = AuthApi.admins
-        .doc(userId)
-        .collection('categories')
-        .doc(categoryName);
+  static Stream<CategoryModel?> getCategoryByName(String categoryName) {
+    try {
+      log("Listening to changes for category: $categoryName");
+      String userId = AuthApi.auth.currentUser!.uid;
 
-    return categoryDoc.snapshots().map((snapshot) {
-      if (snapshot.exists) {
-        Map<String, dynamic> categoryData = snapshot.data()!;
-        log("Updated Category: ${categoryData['name']}", name: "Category Stream");
-        return CategoryModel.fromJson(categoryData);
+      final categoryDoc =
+          AuthApi.admins.doc(userId).collection('categories').doc(categoryName);
+
+      return categoryDoc.snapshots().map((snapshot) {
+        if (snapshot.exists) {
+          Map<String, dynamic> categoryData = snapshot.data()!;
+          log("Updated Category: ${categoryData['name']}",
+              name: "Category Stream");
+          return CategoryModel.fromJson(categoryData);
+        } else {
+          log('Category does not exist', name: "Error");
+          return null;
+        }
+      });
+    } catch (e, stackTrace) {
+      log("Error: $e", name: "Exception");
+      log("Stack Trace: $stackTrace", name: "Exception Stack Trace");
+      return const Stream.empty(); // Return an empty stream on error
+    }
+  }
+
+  static Future<ArtTypeModel?> getArtTypeByName(String categoryName, String artTypeId) async {
+  try {
+    log("Fetching art type: $artTypeId in category: $categoryName");
+    String userId = AuthApi.auth.currentUser!.uid;
+
+    final categoryDoc =
+        AuthApi.admins.doc(userId).collection('categories').doc(categoryName);
+
+    final categorySnapshot = await categoryDoc.get();
+
+    if (categorySnapshot.exists) {
+      Map<String, dynamic> categoryData = categorySnapshot.data()!;
+      List<dynamic> types = categoryData['types'] ?? [];
+
+      var artTypeData = types.firstWhere(
+        (type) => type['id'] == artTypeId,
+        orElse: () => null,
+      );
+
+      if (artTypeData != null) {
+        log("Fetched ArtType: ${artTypeData['name']}", name: "ArtType Fetch");
+        return ArtTypeModel.fromJson(artTypeData);
       } else {
-        log('Category does not exist', name: "Error");
+        log("ArtType not found in category", name: "Error");
         return null;
       }
-    });
+    } else {
+      log("Category does not exist", name: "Error");
+      return null;
+    }
   } catch (e, stackTrace) {
     log("Error: $e", name: "Exception");
     log("Stack Trace: $stackTrace", name: "Exception Stack Trace");
-    return const Stream.empty(); // Return an empty stream on error
+    return null;
   }
 }
 
