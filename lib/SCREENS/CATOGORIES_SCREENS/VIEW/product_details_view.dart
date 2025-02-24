@@ -158,7 +158,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               builder: (context) => const AnalyticsScreen()));
                     },
                     icon: const Icon(Icons.next_plan),
-                    label: const Text("See full overview"),
+                    label: const Text("See full reviews"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
@@ -181,32 +181,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             Text(
               product.description ?? "No description availa ble",
               style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              "Additional Details",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Art Type:", style: TextStyle(fontSize: 16)),
-                Text(widget.artTypeModel.name!,
-                    style: const TextStyle(fontSize: 16)),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Category:", style: TextStyle(fontSize: 16)),
-                Text(product.description ?? "Unknown",
-                    style: const TextStyle(fontSize: 16)),
-              ],
             ),
           ],
         ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drawer_panel/PROVIDER/EDITING/bool_updates.dart';
+import 'package:drawer_panel/PROVIDER/EDITING/edit_images_provider.dart';
 import 'package:drawer_panel/PROVIDER/NAV/order_pending_provider.dart';
 import 'package:drawer_panel/PROVIDER/VIEW/drawing_type_selector.dart';
 import 'package:drawer_panel/PROVIDER/NAV/bottom_nav_provider.dart';
@@ -93,6 +94,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (_) => PendingCountProvider()),
       ChangeNotifierProvider(create: (_) => DownloadProvider()),
       ChangeNotifierProvider(create: (_) => BoolUpdatesProvider()),
+      ChangeNotifierProvider(create: (_) => ImageSelectionProvider()),
     ],
     child: const MyApp(),
   ));

@@ -1,12 +1,11 @@
 import 'dart:developer';
-
 import 'package:drawer_panel/FUNCTIONS/DATA_RETRIEVE_FN/get_catogories.dart';
 import 'package:drawer_panel/FUNCTIONS/EDIT_PRODUCT_FN/edit_product.dart';
 import 'package:drawer_panel/HELPERS/CONSTANTS/show_toast.dart';
 import 'package:drawer_panel/MODEL/DATA/art_type_model.dart';
 import 'package:drawer_panel/MODEL/DATA/drawing_type_model.dart';
-import 'package:drawer_panel/MODEL/DATA/product_size_model.dart';
-import 'package:drawer_panel/SCREENS/NAV_SCREENS/home_screen.dart';
+import 'package:drawer_panel/ROUTER/page_routers.dart';
+import 'package:drawer_panel/SCREENS/CATOGORIES_SCREENS/VIEW/image_editing_screen.dart';
 import 'package:drawer_panel/WIDGETS/BUTTONS/custom_switches.dart';
 import 'package:drawer_panel/WIDGETS/DIALOGS/EDITING/add_new_drawing_types.dart';
 import 'package:drawer_panel/WIDGETS/DIALOGS/EDITING/delete_doc.dart';
@@ -27,9 +26,14 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   Future<ArtTypeModel?>? _future;
+
   @override
   void initState() {
     super.initState();
+    _setFuture();
+  }
+
+  void _setFuture() {
     _future = GetCatogoriesFN.getArtTypeByName(
         widget.artTypeModel.catName!, widget.artTypeModel.id);
   }
@@ -51,10 +55,7 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                             widget.artTypeModel.catName!,
                             widget.artTypeModel.id)
                         .then((_) {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                        (Route<dynamic> route) => false,
-                      );
+                      AppRouter.router.go('/');
                     });
                   },
                 );
@@ -105,11 +106,7 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                                 widget.artTypeModel.id,
                                 !isHided,
                               ).then((_) {
-                                setState(() {
-                                  _future = GetCatogoriesFN.getArtTypeByName(
-                                      widget.artTypeModel.catName!,
-                                      widget.artTypeModel.id);
-                                });
+                                setState(() => _setFuture());
                               });
                             },
                             label: "Hide"),
@@ -124,15 +121,30 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                                 widget.artTypeModel.id,
                                 inOffer,
                               ).then((_) {
-                                setState(() {
-                                  _future = GetCatogoriesFN.getArtTypeByName(
-                                      widget.artTypeModel.catName!,
-                                      widget.artTypeModel.id);
-                                });
+                                setState(() => _setFuture());
                               });
                             },
                             label: "Offer"),
                       ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: size.width * .90,
+                    child: ElevatedButton.icon(
+                      icon:const Icon(Icons.edit),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25)),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ImageEditingScreen(
+                                  artTypeModel: eData,
+                                )));
+                      },
+                      label: const Text("Edit Images"),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -166,11 +178,7 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                           nameController.text,
                           descriptionController.text,
                         ).then((_) {
-                          setState(() {
-                            _future = GetCatogoriesFN.getArtTypeByName(
-                                widget.artTypeModel.catName!,
-                                widget.artTypeModel.id);
-                          });
+                          setState(() => _setFuture());
                         });
                       },
                       child: const Text("Save Changes"),
