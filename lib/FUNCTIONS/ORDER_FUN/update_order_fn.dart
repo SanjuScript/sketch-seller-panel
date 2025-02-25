@@ -10,7 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class UpdateOrderDetails {
   static Future<void> updateTrackingStage(
-      UserDataModel user, String orderId, String newStage) async {
+      String nfToken, String orderId, String newStage) async {
     try {
       DocumentReference orderRef = AuthApi.orders.doc(orderId);
       FieldValue serverTimestamp = FieldValue.serverTimestamp();
@@ -20,11 +20,12 @@ class UpdateOrderDetails {
         'tracking.updated_at': serverTimestamp,
         'tracking.updatedStages.$newStage': serverTimestamp,
       });
-      if (user.nfToken != null && user.nfToken!.isNotEmpty) {
+      if (nfToken != null && nfToken!.isNotEmpty) {
         Map<String, String> notificationData =
             OrderUpdateMsgs.getNotificationData(newStage);
+        log("Notification $nfToken");
         await SendNotification.toSpecificOne(
-          user.nfToken!,
+          nfToken!,
           notificationData['title'] ?? "Order Update",
           notificationData['body'] ?? "Your order status has been updated.",
         );

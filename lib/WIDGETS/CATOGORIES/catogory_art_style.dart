@@ -58,7 +58,7 @@ class _ArtStyleScreenState extends State<ArtStyleScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ChoiceChip(
                       checkmarkColor: Colors.white,
-                      side: const BorderSide(color: Colors.teal),
+                      side: const BorderSide(color: Colors.deepPurple),
                       disabledColor: Colors.grey,
                       label: Text(widget.sortOptions[index]),
                       selected:
@@ -71,7 +71,7 @@ class _ArtStyleScreenState extends State<ArtStyleScreen> {
                           }
                         });
                       },
-                      selectedColor: Colors.teal[400],
+                      selectedColor: Colors.deepPurple[400],
                       backgroundColor: Colors.white70,
                       labelStyle: TextStyle(
                         color: widget.sortOptions[index] == _selectedSortOption

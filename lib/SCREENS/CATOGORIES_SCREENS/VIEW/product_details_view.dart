@@ -2,8 +2,8 @@ import 'dart:developer';
 import 'package:drawer_panel/MODEL/DATA/art_type_model.dart';
 import 'package:drawer_panel/PROVIDER/VIEW/drawing_type_selector.dart';
 import 'package:drawer_panel/PROVIDER/product_slider_provider.dart';
-import 'package:drawer_panel/SCREENS/CATOGORIES_SCREENS/VIEW/analytics_screen.dart';
 import 'package:drawer_panel/SCREENS/CATOGORIES_SCREENS/VIEW/editing_screen.dart';
+import 'package:drawer_panel/SCREENS/CATOGORIES_SCREENS/VIEW/reviews_screen.dart';
 import 'package:drawer_panel/WIDGETS/CATOGORIES/VIEW/analytics_cards.dart';
 import 'package:drawer_panel/WIDGETS/CATOGORIES/VIEW/drawing_type_selector.dart';
 import 'package:drawer_panel/WIDGETS/CATOGORIES/VIEW/product_images_displayer.dart';
@@ -155,7 +155,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const AnalyticsScreen()));
+                              builder: (context) => ReviewScreen(
+                                    pID: widget.artTypeModel.product.productId!,
+                                  )));
                     },
                     icon: const Icon(Icons.next_plan),
                     label: const Text("See full reviews"),

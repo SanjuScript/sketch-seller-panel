@@ -28,6 +28,25 @@ class UserData {
     }
   }
 
+ static Future<String?> getUserNfToken(String userID) async {
+  try {
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .get();
+
+    if (docSnapshot.exists) {
+      final data = docSnapshot.data() as Map<String, dynamic>;
+      return data['nfToken'];
+    }
+    return null;
+  } catch (e) {
+    log("Error fetching user token: $e");
+    return null;
+  }
+}
+
+
   static Future<void> updateUserName(String newName) async {
     final uid = AuthApi.auth.currentUser!.uid;
 

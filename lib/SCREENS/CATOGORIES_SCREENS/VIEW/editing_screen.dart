@@ -25,6 +25,7 @@ class ProductEditingScreen extends StatefulWidget {
 class _ProductEditingScreenState extends State<ProductEditingScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController offerMsgController = TextEditingController();
   Future<ArtTypeModel?>? _future;
 
   @override
@@ -82,6 +83,7 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
           bool inOffer = eData.product.inOffer!;
           nameController.text = eData.product.title!;
           descriptionController.text = eData.product.description!;
+          offerMsgController.text = eData.product.offermsg!;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -128,10 +130,43 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  if (inOffer) ...[
+                    CustomTextFields(
+                      keyboardType: TextInputType.multiline,
+                      isDescription: true,
+                      label: "Offer message",
+                      controller: offerMsgController,
+                      hint: "Your message",
+                      icon: Icons.edit,
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: size.width * .90,
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.update),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.lightGreen,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25)),
+                        ),
+                        onPressed: () async{
+                          final txt = offerMsgController.text;
+                         await EditProduct.updateOfferMsg(
+                            widget.artTypeModel.catName!,
+                            widget.artTypeModel.id,
+                            txt,
+                          );
+                        },
+                        label: const Text("Update message"),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 10),
                   SizedBox(
                     width: size.width * .90,
                     child: ElevatedButton.icon(
-                      icon:const Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25)),
@@ -141,8 +176,8 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ImageEditingScreen(
-                                  artTypeModel: eData,
-                                )));
+                                      artTypeModel: eData,
+                                    )));
                       },
                       label: const Text("Edit Images"),
                     ),

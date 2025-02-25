@@ -31,6 +31,13 @@ class AuthApi {
     }
     return FirebaseFirestore.instance.collection('Orders');
   }
+  static CollectionReference get reviews {
+    if (!isAuthenticated) {
+      throw FirebaseAuthException(
+          code: 'no-current-user', message: 'No authenticated user found.');
+    }
+    return FirebaseFirestore.instance.collection('Reviews');
+  }
 
 
 

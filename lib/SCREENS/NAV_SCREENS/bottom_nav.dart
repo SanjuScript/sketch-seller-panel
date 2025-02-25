@@ -20,7 +20,7 @@ class BottomNav extends StatelessWidget {
     final navProvider = Provider.of<BottomNavProvider>(context);
     final screens = [
       HomeScreen(),
-      const TransactionScreen(),
+      // const TransactionScreen(),
       const OrderTabs(),
       const ProfileScreen()
     ];
@@ -47,26 +47,26 @@ class BottomNav extends StatelessWidget {
                   selected: navProvider.currentIndex == 0,
                   onPressed: () => navProvider.updateIndex(0),
                 ),
-                IconBottomBar(
-                  text: "Transactions",
-                  icon: Icons.receipt_long_outlined,
-                  selected: navProvider.currentIndex == 1,
-                  onPressed: () => navProvider.updateIndex(1),
-                ),
+                // IconBottomBar(
+                //   text: "Transactions",
+                //   icon: Icons.receipt_long_outlined,
+                //   selected: navProvider.currentIndex == 1,
+                //   onPressed: () => navProvider.updateIndex(1),
+                // ),
                 Consumer<PendingCountProvider>(builder: (context, count, _) {
                   return IconBottomBar(
                     text: "Orders",
                     icon: Icons.local_grocery_store_outlined,
                     showDot: count.shouldShowDot,
-                    selected: navProvider.currentIndex == 2,
-                    onPressed: () => navProvider.updateIndex(2),
+                    selected: navProvider.currentIndex == 1,
+                    onPressed: () => navProvider.updateIndex(1),
                   );
                 }),
                 IconBottomBar(
                   text: "Profile",
                   icon: Icons.person_outline,
-                  selected: navProvider.currentIndex == 3,
-                  onPressed: () => navProvider.updateIndex(3),
+                  selected: navProvider.currentIndex == 2,
+                  onPressed: () => navProvider.updateIndex(2),
                 ),
               ],
             ),

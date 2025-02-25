@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/get_order_pending_stream.dart';
 import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/update_order_fn.dart';
+import 'package:drawer_panel/FUNCTIONS/USER_DATA_FN/user_data_fn.dart';
 import 'package:drawer_panel/HELPERS/date_formater.dart';
 import 'package:drawer_panel/MODEL/ORDER/address_model.dart';
 import 'package:drawer_panel/MODEL/ORDER/order_details.dart';
@@ -267,15 +268,15 @@ class OrderedPictureScreen extends StatelessWidget {
             if (showButton)
               CustomButton(
                 text: "Mark As Started",
-                onPressed: () {
+                onPressed: () async {
+                  final token = await UserData.getUserNfToken(orderDetailModel.userID);
+                  log(token.toString(), name: "TOKEN");
                   showMarkAsStartedDialogue(
                     context: context,
                     onConfirm: () {
                       log(orderDetailModel.userDetails!.uid.toString());
                       UpdateOrderDetails.updateTrackingStage(
-                          orderDetailModel.userDetails!,
-                          orderDetailModel.orderId,
-                          "Drawing Started");
+                          token!, orderDetailModel.orderId, "Drawing Started");
                       Navigator.pop(context);
                     },
                   );

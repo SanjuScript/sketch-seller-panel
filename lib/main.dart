@@ -25,9 +25,11 @@ import 'package:provider/provider.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
-Future _firebaseBackgroundMessage(RemoteMessage message) async {
+Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
+  log("Background Notification Received");
   if (message.notification != null) {
-    log("Some notification Received in background...");
+    log("Title: ${message.notification!.title}");
+    log("Body: ${message.notification!.body}");
   }
 }
 

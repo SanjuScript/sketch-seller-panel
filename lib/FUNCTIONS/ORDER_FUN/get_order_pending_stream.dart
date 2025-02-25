@@ -11,7 +11,8 @@ class GetOrderDetails {
   static Stream<int> getPendingCount() {
     return AuthApi.orders
         .where("ownerID", isEqualTo: AuthApi.currentAdmin!.uid)
-        .where("status", isEqualTo: "Pending")
+        .where("tracking.stage",
+            whereNotIn: ["Delivered", "Refunded", "Delivery Failed"])
         .snapshots()
         .map((snapshot) => snapshot.size);
   }
@@ -19,7 +20,7 @@ class GetOrderDetails {
   static Stream<int> getDeliveredCount() {
     return AuthApi.orders
         .where("ownerID", isEqualTo: AuthApi.currentAdmin!.uid)
-        .where("status", isEqualTo: "Delivered")
+        .where("tracking.stage", isEqualTo: "Delivered")
         .snapshots()
         .map((snapshot) => snapshot.size);
   }
@@ -54,6 +55,24 @@ class GetOrderDetails {
     } catch (e) {
       log('Error fetching orders: $e');
       return [];
+    }
+  }
+
+  static Future<OrderDetailModel?> getOrderById(String orderId) async {
+    try {
+      DocumentReference orderRef = AuthApi.orders.doc(orderId);
+
+      DocumentSnapshot doc = await orderRef.get();
+
+      if (doc.exists) {
+        return OrderDetailModel.fromJson(doc.data() as Map<String, dynamic>);
+      } else {
+        log('Order not found: $orderId');
+        return null;
+      }
+    } catch (e) {
+      log('Error fetching order: $e');
+      return null;
     }
   }
 

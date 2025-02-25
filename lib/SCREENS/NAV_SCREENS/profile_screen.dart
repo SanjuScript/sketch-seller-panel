@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 import 'package:drawer_panel/FUNCTIONS/ORDER_FUN/get_order_pending_stream.dart';
 import 'package:drawer_panel/FUNCTIONS/USER_DATA_FN/user_data_fn.dart';
 import 'package:drawer_panel/HELPERS/HANDLERS/date_format.dart';
@@ -14,7 +15,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.sizeOf(context);
+    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -142,7 +143,7 @@ class ProfileScreen extends StatelessWidget {
                               );
                             }),
                         const SizedBox(height: 10),
-                        StreamBuilder<Object>(
+                        StreamBuilder<num>(
                             stream: GetOrderDetails.getTotalEarnings(),
                             builder: (context, snapshot) {
                               return InfoCard(
@@ -152,7 +153,7 @@ class ProfileScreen extends StatelessWidget {
                               );
                             }),
                         const SizedBox(height: 10),
-                        StreamBuilder<Object>(
+                        StreamBuilder<int>(
                             stream: GetOrderDetails.getDeliveredCount(),
                             builder: (context, snapshot) {
                               return InfoCard(

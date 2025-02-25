@@ -4,7 +4,6 @@ import 'package:drawer_panel/API/auth_api.dart';
 import 'package:drawer_panel/HELPERS/CONSTANTS/show_toast.dart';
 import 'package:drawer_panel/MODEL/DATA/drawing_type_model.dart';
 import 'package:drawer_panel/MODEL/DATA/product_size_model.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class EditProduct {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -38,6 +37,77 @@ class EditProduct {
       }
     } catch (e) {
       log("Error updating availability: $e");
+    }
+  }
+
+  static Future<void> updateOfferMsg(
+      String categoryId, String artTypeId, String msg) async {
+    try {
+      String userId = AuthApi.currentAdmin!.uid;
+      final categoryRef = FirebaseFirestore.instance
+          .collection('admins')
+          .doc(userId)
+          .collection('categories')
+          .doc(categoryId);
+
+      final categorySnapshot = await categoryRef.get();
+
+      if (categorySnapshot.exists) {
+        List<dynamic> types = categorySnapshot.data()?['types'] ?? [];
+
+        int index = types.indexWhere((type) => type['id'] == artTypeId);
+        if (index != -1) {
+          types[index]['product']['offermsg'] = msg;
+
+          await categoryRef.update({'types': types});
+          showToast("Offer message updated successfully!");
+        } else {
+          log("Error: ArtType not found!");
+        }
+      } else {
+        log("Error: Category not found!");
+      }
+    } catch (e) {
+      log("Error updating offer message: $e");
+      showToast("Try again later $e");
+    }
+  }
+
+  static Future<void> incrementProductStats(
+      String categoryId, String artTypeId, num orderRevenue) async {
+    try {
+      String userId = AuthApi.currentAdmin!.uid;
+      final categoryRef = FirebaseFirestore.instance
+          .collection('admins')
+          .doc(userId)
+          .collection('categories')
+          .doc(categoryId);
+
+      final categorySnapshot = await categoryRef.get();
+
+      if (categorySnapshot.exists) {
+        List<dynamic> types = categorySnapshot.data()?['types'] ?? [];
+
+        int index = types.indexWhere((type) => type['id'] == artTypeId);
+        if (index != -1) {
+          Map<String, dynamic> product = types[index]['product'];
+
+          product['revenue'] = (product['revenue'] ?? 0) + orderRevenue;
+          product['totalOrders'] = (product['totalOrders'] ?? 0) + 1;
+
+          types[index]['product'] = product;
+
+          await categoryRef.update({'types': types});
+          showToast("Order stats updated successfully!");
+        } else {
+          log("Error: ArtType not found!");
+        }
+      } else {
+        log("Error: Category not found!");
+      }
+    } catch (e) {
+      log("Error updating order stats: $e");
+      showToast("Try again later $e");
     }
   }
 
